@@ -83,10 +83,8 @@ footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padd
   <label for="ft">Found in Taiwan?<select id="ft"></select></label>
   <label for="fw">Where in Taiwan<select id="fw"></select></label>
   <label for="fr">Native region<select id="fr"></select></label>
-  <label class="toggle" for="fd"><input id="fd" type="checkbox"> Da'an Park only</label>
 </section>
-<div class="status"><span id="count"></span>
-  <span class="legend"><span><i style="background:var(--leaf)"></i>In Taiwan</span><span><i style="background:var(--amber)"></i>Occasional</span><span><i style="background:var(--line)"></i>Not in Taiwan</span><span><i style="background:var(--gold)"></i>Da'an Park</span></span></div>
+<div class="status"><span id="count"></span></div>
 <main class="grid" id="grid"></main>
 <footer>Taiwan status, settings and native regions are a broad classification from general botanical knowledge, not an official survey. Photos show the real species (or its genus when no species photo exists) and come from Wikipedia under their own licences; the Hachiku Bamboo image is Xfrog's own render. Species list from the Xfrog Asia pack page on CGTrader, October 2026. Unity and CGTrader entries come from your tree correspondence sheet; the Oasis trees are assumed to be from Unity’s URP 3D Sample.</footer>
 </div>
@@ -98,7 +96,7 @@ function opts(el,key,label){const vals=[...new Set(DATA.map(d=>d[key]).filter(Bo
   el.innerHTML=`<option value="">All</option>`+vals.map(v=>`<option>${v}</option>`).join('');}
 opts($('fl'),'lib');opts($('fs'),'s');opts($('ft'),'tw');opts($('fw'),'w');opts($('fr'),'r');
 const n=k=>DATA.filter(k).length;
-$('tally').innerHTML=`<span><b>${DATA.length}</b>entries</span><span><b>${n(d=>d.lib!=='Xfrog Asia'&&d.lib!=='No model yet')}</b>from your packs</span><span><b>${n(d=>d.tw==='Yes')}</b>in Taiwan</span><span><b>${n(d=>d.st==='Native')}</b>native</span><span><b>${n(d=>d.d)}</b>Da'an Park</span>`;
+$('tally').innerHTML=`<span><b>${DATA.length}</b>entries</span><span><b>${n(d=>d.tw==='Yes')}</b>in Taiwan</span>`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function card(d,i){
   const wp='https://en.wikipedia.org/wiki/'+encodeURIComponent(d.wp.replace(/ /g,'_'));
@@ -137,14 +135,14 @@ function loadImg(ph){const d=DATA[+ph.dataset.i];
     if(d.imgsrc){const s=document.createElement('span');s.className='src';s.textContent=d.imgsrc+' render';ph.append(s)}});pump();}
 const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);loadImg(e.target)}}),{rootMargin:'300px'}):null;
 function render(){
-  const q=$('q').value.trim().toLowerCase(),fl=$('fl').value,fs=$('fs').value,ft=$('ft').value,fw=$('fw').value,fr=$('fr').value,fd=$('fd').checked;
-  const list=DATA.map((d,i)=>[d,i]).filter(([d])=>(!q||(d.b+' '+d.c+' '+d.n+' '+(d.pk||[]).map(p=>p[0]).join(' ')).toLowerCase().includes(q))&&(!fl||d.lib===fl)&&(!fs||d.s===fs)&&(!ft||d.tw===ft)&&(!fw||d.w===fw)&&(!fr||d.r===fr)&&(!fd||d.d));
+  const q=$('q').value.trim().toLowerCase(),fl=$('fl').value,fs=$('fs').value,ft=$('ft').value,fw=$('fw').value,fr=$('fr').value;
+  const list=DATA.map((d,i)=>[d,i]).filter(([d])=>(!q||(d.b+' '+d.c+' '+d.n+' '+(d.pk||[]).map(p=>p[0]).join(' ')).toLowerCase().includes(q))&&(!fl||d.lib===fl)&&(!fs||d.s===fs)&&(!ft||d.tw===ft)&&(!fw||d.w===fw)&&(!fr||d.r===fr));
   const LO={'Unity packs':0,'CGTrader':1,'Xfrog Asia':2,'No model yet':3};list.sort((a,b)=>(b[0].d-a[0].d)||((LO[a[0].lib]??9)-(LO[b[0].lib]??9)));
   $('grid').innerHTML=list.length?list.map(([d,i])=>card(d,i)).join(''):'<p class="empty">No plants match these filters.</p>';
   $('count').textContent=`${list.length} of ${DATA.length} entries shown`;
   document.querySelectorAll('.ph').forEach(ph=>io?io.observe(ph):loadImg(ph));
 }
-['q','fl','fs','ft','fw','fr','fd'].forEach(id=>$(id).addEventListener('input',render));
+['q','fl','fs','ft','fw','fr'].forEach(id=>$(id).addEventListener('input',render));
 render();
 </script>
 </body>
