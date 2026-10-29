@@ -20,7 +20,7 @@ h1 span{background:var(--lime);color:var(--lime-ink);padding:0 .12em}
 .sub{color:var(--muted);margin:8px 0 0;max-width:60ch}
 .tally{display:flex;gap:18px;flex-wrap:wrap;font:13px "Space Mono",monospace;color:var(--muted)}
 .tally b{display:block;font:800 24px Archivo,sans-serif;color:var(--ink)}
-.bar{position:sticky;top:0;z-index:5;background:var(--bg);display:grid;grid-template-columns:minmax(0,320px);gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(2,minmax(0,320px));gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
 @media (max-width:720px){.bar{grid-template-columns:1fr}}
 label{display:flex;flex-direction:column;gap:4px;font:11px "Space Mono",monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
 input,select{font:14px Archivo,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
@@ -61,6 +61,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 </header>
 <section class="bar" aria-label="Filters">
   <label for="fc">Category<select id="fc"></select></label>
+  <label for="fl">Library<select id="fl"></select></label>
 </section>
 <div class="status" id="count"></div>
 <main id="out"></main>
@@ -75,6 +76,7 @@ const fill=(el,k)=>{el.innerHTML='<option value="">All</option>'+[...new Set(DAT
 const tot=DATA.reduce((a,d)=>a+d.sec,0);
 $('tally').innerHTML=`<span><b>${DATA.length}</b>sounds</span><span><b>${new Set(DATA.map(d=>d.cat)).size}</b>categories</span><span><b>${Math.round(tot/60)}</b>minutes</span>`;
 $('fc').innerHTML='<option value="">All categories</option>'+[...new Set(DATA.map(d=>d.cat))].sort().map(v=>`<option>${esc(v)}</option>`).join('');
+$('fl').innerHTML='<option value="">All libraries</option>'+[...new Set(DATA.map(d=>d.lib))].sort((a,b)=>a.localeCompare(b)).map(v=>`<option>${esc(v)}</option>`).join('');
 const maxS=Math.log(Math.max(...DATA.map(d=>d.sec))+1);
 function row(d){
   const h=Math.max(12,Math.round(100*Math.log(d.sec+1)/maxS));
@@ -86,13 +88,13 @@ function row(d){
   <div class="go"><a class="${d.s?'s':''}" href="${esc(d.url)}" target="_blank" rel="noopener">${d.s?'Search Sounddogs ↗':'Open on Sounddogs ↗'}</a></div></article>`;
 }
 function render(){
-  const c=$('fc').value;
-  const L=DATA.filter(d=>!c||d.cat===c);
+  const c=$('fc').value,l=$('fl').value;
+  const L=DATA.filter(d=>(!c||d.cat===c)&&(!l||d.lib===l));
   $('out').innerHTML=L.length?`<div class="list">${L.map(row).join('')}</div>`:'<p class="status">No sounds match.</p>';
   $('count').textContent=`${L.length} of ${DATA.length} sounds shown`;
 }
 $('out').addEventListener('click',e=>{const b=e.target.closest('.more');if(!b)return;const r=b.closest('.row');r.classList.toggle('open');b.textContent=r.classList.contains('open')?'Show less':'Show all'});
-$('fc').addEventListener('input',render);
+['fc','fl'].forEach(id=>$(id).addEventListener('input',render));
 render();
 </script>
 </body>
