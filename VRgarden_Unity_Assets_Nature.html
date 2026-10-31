@@ -32,7 +32,7 @@ h1 span{background:var(--lime);color:#1a2600;padding:0 .18em;border-radius:4px}
 .tally{display:flex;gap:20px;flex-wrap:wrap;font:400 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .tally b{display:block;font:800 26px var(--display);color:var(--ink);letter-spacing:0}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;
-  display:grid;grid-template-columns:2fr repeat(2,minmax(150px,1fr)) auto;gap:10px;align-items:end}
+  display:grid;grid-template-columns:2fr repeat(2,minmax(150px,1fr));gap:10px;align-items:end}
 @media (max-width:800px){.bar{grid-template-columns:1fr 1fr}.bar .q{grid-column:1/-1}.toggles{grid-column:1/-1}}
 .bar label{display:flex;flex-direction:column;gap:4px;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
 .bar input[type=search],.bar select{font:15px var(--display);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
@@ -72,7 +72,7 @@ footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padd
 <header>
   <div>
     <h1>VRgarden <span> nature</span></h1>
-    <p class="sub">This library contains nature, terrain, vegetation-rendering, water and weather assets from the Unity Asset Store. Each card links to the asset’s store page and, where available, its documentation. Cards also show details such as the version and any compatibility issues. Essentials are the assets we use most often in the course.</p>
+    <p class="sub">This library contains nature, terrain, vegetation-rendering, water and weather assets from the Unity Asset Store. Each card links to the asset’s store page and, where available, its documentation. Cards also show details such as the version and any compatibility issues. Assets with a green outline are the ones we use most often in the course.</p>
   </div>
   <div class="tally" id="tally"></div>
 </header>
@@ -80,11 +80,6 @@ footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padd
   <label class="q" for="q">Search<input id="q" type="search" placeholder="Name, publisher or note"></label>
   <label for="fg">Group<select id="fg"></select></label>
   <label for="fs">Subgroup<select id="fs"></select></label>
-  <div class="toggles" role="group" aria-label="Quick filters">
-    <button class="tg" id="te" aria-pressed="false">Essential</button>
-    <button class="tg" id="tv" aria-pressed="false">VR</button>
-    <button class="tg" id="t6" aria-pressed="false">Unity 6</button>
-  </div>
 </section>
 
 <div class="status"><span id="count"></span></div>
@@ -103,9 +98,8 @@ function fillSub(){const g=$('fg').value;const s=[...new Set(DATA.filter(d=>!g||
   $('fs').innerHTML='<option value="">All</option>'+s.map(x=>`<option>${esc(x)}</option>`).join('');$('fs').disabled=!s.length;}
 fillSub();
 const n=f=>DATA.filter(f).length;
-$('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span><span><b>${n(d=>d.e)}</b>essential</span>`;
+$('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span>`;
 const state={e:false,v:false,u:false};
-[['te','e'],['tv','v'],['t6','u']].forEach(([id,k])=>$(id).addEventListener('click',e=>{state[k]=!state[k];e.currentTarget.setAttribute('aria-pressed',state[k]);render()}));
 function card(d){
   const tags=[];
   if(d.vr==='VR')tags.push('<span class="tag vr">VR</span>');
@@ -120,7 +114,7 @@ function card(d){
     :`<span class="none"><b>${esc(d.n.trim()[0]||'?')}</b>${d.s?(d.fab?'Search on Fab':'Search the Asset Store'):'No image'}</span>`;
   const notes=[d.note,d.match].filter(Boolean).map(t=>`<p class="note">${esc(t)}</p>`).join('');
   return `<article class="card${d.e?' ess':''}">
-   <a class="ph" href="${esc(d.url)}" target="_blank" rel="noopener" tabindex="-1">${media}${d.e?'<span class="esstag">Essential</span>':''}</a>
+   <a class="ph" href="${esc(d.url)}" target="_blank" rel="noopener" tabindex="-1">${media}</a>
    <div class="body"><span class="grp">${esc(d.g)}</span><p class="nm">${esc(d.n)}</p><p class="pub">${esc(d.p)}</p>
    <div class="tags">${tags.join('')}</div>${notes}
    ${d.doc?`<a class="link doc" href="${esc(d.doc)}" target="_blank" rel="noopener">Documentation ↗</a>`:''}
