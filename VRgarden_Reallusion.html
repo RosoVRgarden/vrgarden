@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VRgarden Reallusion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Archivo:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a project shelf — a sticky filter bar over a grid of package cards; essentials pinned first with a lime tab */
+:root{
+  --bg:#eef0ee; --card:#ffffff; --ink:#15181a; --muted:#5f676b; --line:#d8dcda;
+  --lime:#a7d129; --lime-ink:#2f4a00; --lime-soft:#eef7d6;
+  --vr:#3a5bd9; --vr-soft:#e6ebfc; --warn:#b26b00; --warn-soft:#fbefd9; --chip:#eef1ef; --ph:#e3e7e5;
+  --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#121516; --card:#1b2022; --ink:#e8ecea; --muted:#9aa3a6; --line:#2c3336;
+  --lime:#b8e23a; --lime-ink:#d9f58a; --lime-soft:#26300f;
+  --vr:#8ea6ff; --vr-soft:#1f2747; --warn:#f0b357; --warn-soft:#3a2a12; --chip:#252b2e; --ph:#232a2c; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--display);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px}
+h1{font:800 clamp(28px,4.2vw,44px)/1 var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1 span{background:var(--lime);color:#1a2600;padding:0 .18em;border-radius:4px}
+.sub{color:var(--muted);margin:8px 0 0;max-width:64ch}
+.tally{display:flex;gap:20px;flex-wrap:wrap;font:400 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tally b{display:block;font:800 26px var(--display);color:var(--ink);letter-spacing:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;
+  display:grid;grid-template-columns:2fr minmax(180px,1fr);gap:10px;align-items:end}
+@media (max-width:800px){.bar{grid-template-columns:1fr}}
+.bar label{display:flex;flex-direction:column;gap:4px;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
+.bar input[type=search],.bar select{font:15px var(--display);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+.toggles{display:flex;gap:6px;flex-wrap:wrap}
+.tg{font:600 13px var(--display);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
+.tg[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:focus-visible{outline:2px solid var(--vr);outline-offset:2px}
+.status{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font:12px var(--mono);color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
+.card.ess{border-color:var(--lime);box-shadow:0 0 0 2px var(--lime) inset}
+.ph{aspect-ratio:512/650;max-width:100%;background:var(--ph);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;text-decoration:none;color:var(--muted)}
+.ph img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.ph .none{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;text-align:center;font:400 12px var(--mono)}
+.ph .none b{font:800 34px var(--display);color:var(--line)}
+.esstag{position:absolute;left:0;top:10px;background:var(--lime);color:#1a2600;font:700 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:3px 10px 3px 8px;border-radius:0 999px 999px 0}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.grp{font:400 11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.nm{font:700 17px/1.2 var(--display);margin:0;overflow-wrap:anywhere}
+.pub{margin:0;color:var(--muted);font-size:13.5px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:400 11.5px var(--mono);padding:2px 8px;border-radius:4px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.vr{background:var(--vr-soft);color:var(--vr);font-weight:700}
+.tag.u6{background:var(--lime-soft);color:var(--lime-ink);font-weight:700}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.note{margin:0;font-size:13px;color:var(--muted);border-left:2px solid var(--line);padding-left:8px;overflow-wrap:anywhere}
+.link{margin-top:auto;padding-top:4px;font:700 13px var(--display);color:var(--vr);text-decoration:none}
+.link:hover{text-decoration:underline}
+.link.s{color:var(--muted)}
+.link.doc+.link{margin-top:0;padding-top:0}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;max-width:95ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>VRgarden <span> Reallusion</span></h1>
+    <p class="sub">Characters, clothing, hair and morphs for Reallusion Character Creator 4. Each card links to the asset’s page on the Reallusion Marketplace or Content Store and shows where to find it in Character Creator. A copy of the software is available on the office computer and the computer next to the door.</p>
+  </div>
+  <div class="tally" id="tally"></div>
+</header>
+<section class="bar" aria-label="Filters">
+  <label class="q" for="q">Search<input id="q" type="search" placeholder="Name, artist or note"></label>
+  <label for="fg">Group<select id="fg"></select></label>
+</section>
+
+<div class="status"><span id="count"></span></div>
+<main class="grid" id="grid"></main>
+<footer>Data from the Reallusion CC tab of your VRgarden asset sheet. Variants listed separately on the sheet (for example Blazer Base and A–D) are grouped on one card. Marketplace links and cover images were matched by name and artist in October 2026; where the match is uncertain, the card says so.</footer>
+</div>
+<script>
+const DATA=[{"e": false, "p": "Goatcheese", "n": "Balaclava Pack", "v": "", "g": "accessory", "u6": "", "vr": "", "note": "Includes: Balaclava 1–4 · In Character Creator: Outfit > Conformable Accessory", "url": "https://marketplace.reallusion.com/balaclava-pack", "img": "https://dafiles-dl.reallusion.com/Upload/JCC42b3c668907c08635/JCC42b3c668907c08635_20220906120053_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Bandana", "v": "", "g": "accessory", "u6": "", "vr": "", "note": "Includes: Bandana A, B · In Character Creator: Accessory > Clothes Gear", "url": "https://marketplace.reallusion.com/bandana-512951", "img": "https://dafiles-dl.reallusion.com/Upload/JCCf04ea95d9d03570c9/JCCf04ea95d9d03570c9_20240417090040_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Bowtie", "v": "", "g": "accessory", "u6": "", "vr": "", "note": "Includes: Bowtie A, B · In Character Creator: Accessory > Clothes Gear", "url": "https://marketplace.reallusion.com/bowtie-512949", "img": "https://dafiles-dl.reallusion.com/Upload/JCC7d2559d6967814051/JCC7d2559d6967814051_20240417090747_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Cape Shawl", "v": "", "g": "accessory", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Conformable Accessory", "url": "https://marketplace.reallusion.com/cape-shawl-512921", "img": "https://dafiles-dl.reallusion.com/Upload/JCCbd590704125c45048/JCCbd590704125c45048_20240417093158_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Neck Warmer", "v": "", "g": "accessory", "u6": "", "vr": "", "note": "Includes: Neck Warmer A, B · In Character Creator: Accessory > Clothes Gear", "url": "https://marketplace.reallusion.com/neck-warmer", "img": "https://dafiles-dl.reallusion.com/Upload/JCC1ce19b4f0bf011fc9/JCC1ce19b4f0bf011fc9_20240417090747_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Scarf", "v": "", "g": "accessory", "u6": "", "vr": "", "note": "Includes: Scarf A, B · In Character Creator: Accessory > Clothes Gear", "url": "https://marketplace.reallusion.com/scarf-512947", "img": "https://dafiles-dl.reallusion.com/Upload/JCC13b60c86c98daf214/JCC13b60c86c98daf214_20240417090747_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Tied-up Shirt", "v": "", "g": "accessory", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Conformable Accessory", "url": "https://marketplace.reallusion.com/tied-up-shirt-512946", "img": "https://dafiles-dl.reallusion.com/Upload/JCC7d331d1229fb782f4/JCC7d331d1229fb782f4_20240417090747_Thumb.jpg"}, {"e": false, "p": "Dorothy Jean Thompson", "n": "Medical Clothing Pack", "v": "", "g": "full-body", "u6": "", "vr": "", "note": "Includes: blue scrubs (shirt and pants), lab coat, scrub cap, face mask, latex gloves, stethoscope · In Character Creator: Outfit > Full-body, Coats, Pants, Gloves, Conformable Accessory", "url": "https://marketplace.reallusion.com/scrubs-pack", "img": "https://dafiles-dl.reallusion.com/Upload/JCCe98aee3cdf05b1cb0/JCCe98aee3cdf05b1cb0_20201005001921_Thumb.jpg"}, {"e": false, "p": "After Choices", "n": "AC Teen Li Li", "v": "", "g": "character", "u6": "", "vr": "", "note": "Includes: Asian teen character · In Character Creator: Actor > Project/Character > Female", "url": "https://marketplace.reallusion.com/ac-teen-li-li", "img": "https://dafiles-dl.reallusion.com/Upload/JCC291bbabda6e91a908/JCC291bbabda6e91a908_20240305064252_Thumb.png"}, {"e": false, "p": "Freedom Arts", "n": "Asian Female Pack 01", "v": "", "g": "character", "u6": "", "vr": "", "note": "Includes: Asian Female 01–05 · In Character Creator: Actor > Project/Character > Female", "url": "https://marketplace.reallusion.com/asian-female-pack-01", "img": "https://dafiles-dl.reallusion.com/Upload/JCCf9321a4b20b700e30/JCCf9321a4b20b700e30_20220323025946_Thumb.jpg"}, {"e": false, "p": "Freedom Arts", "n": "Asian Kid Male Pack 01", "v": "", "g": "character", "u6": "", "vr": "", "note": "Includes: Asian Kid Male 01–05 · In Character Creator: Actor > Project/Character > Male", "url": "https://marketplace.reallusion.com/asian-kid-male-pack-01", "img": "https://dafiles-dl.reallusion.com/Upload/JCCe811a6dd83e6b1188/JCCe811a6dd83e6b1188_20220323064853_Thumb.jpg"}, {"e": false, "p": "Freedom Arts", "n": "Asian Male Pack 01", "v": "", "g": "character", "u6": "", "vr": "", "note": "In Character Creator: Actor > Project/Character > Male", "url": "https://marketplace.reallusion.com/asian-male-pack-01", "img": "https://dafiles-dl.reallusion.com/Upload/JCCddadc4fd4a047ca37/JCCddadc4fd4a047ca37_20220323035602_Thumb.jpg"}, {"e": false, "p": "Pix Magic", "n": "Hanna (061)", "v": "", "g": "character", "u6": "", "vr": "", "note": "In Character Creator: Actor > Project/Character > Female", "url": "https://marketplace.reallusion.com/hanna-061_555157", "img": "https://dafiles-dl.reallusion.com/Upload/JCC517af196ef2525216/JCC517af196ef2525216_20241020221748_Thumb.jpg", "match": "Listed on the sheet as Hanna Female."}, {"e": false, "p": "Elvis Deane", "n": "International Faces – Men 40", "v": "", "g": "character", "u6": "", "vr": "", "note": "Includes: male faces IF-Men 01–09 (e.g. Clark) · In Character Creator: Actor > Project/Character > Male", "url": "https://marketplace.reallusion.com/international-faces-men-40", "img": "https://dafiles-dl.reallusion.com/Upload/JCC2064bdcc38f349e30/JCC2064bdcc38f349e30_20230207022230_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Scan Reality – Alejandro", "v": "", "g": "character", "u6": "", "vr": "", "note": "In Character Creator: Actor > Character Preset > Head Preset", "url": "https://marketplace.reallusion.com/scan-reality-alejandro", "img": "https://dafiles-dl.reallusion.com/Upload/JCCc6539f6a759ee1a21/JCCc6539f6a759ee1a21_20211029084343_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Scan Reality Pro – Petra", "v": "", "g": "character", "u6": "", "vr": "", "note": "In Character Creator: Actor > Character Preset > Female Preset", "url": "https://marketplace.reallusion.com/petra_446557", "img": "https://dafiles-dl.reallusion.com/Upload/JCC58ae0a67e6282b7b3/JCC58ae0a67e6282b7b3_20230619142534_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Scan Reality Pro – Tate", "v": "", "g": "character", "u6": "", "vr": "", "note": "In Character Creator: Actor > Character Preset > Male Preset", "url": "https://marketplace.reallusion.com/tate_446567", "img": "https://dafiles-dl.reallusion.com/Upload/JCC483994d6299324be0/JCC483994d6299324be0_20230619142838_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Scan Reality – Susan", "v": "", "g": "character", "u6": "", "vr": "", "note": "In Character Creator: Actor > Character Preset > Female Preset", "url": "https://marketplace.reallusion.com/scan-reality-susan", "img": "https://dafiles-dl.reallusion.com/Upload/JCCf729bb21c24cb0094/JCCf729bb21c24cb0094_20211215025118_Thumb.jpg"}, {"e": false, "p": "Reallusion", "n": "Essential Clothing & Fabric", "v": "", "g": "clothing", "u6": "", "vr": "", "note": "Clothing bases with fabric textures and patterns · In Character Creator: Character > Cloth > Others", "url": "https://www.reallusion.com/ContentStore/Character-Creator/Pack/CC_Essential_Cloth_Fabric/default.html", "img": "https://www.reallusion.com/ContentStore/Character-Creator/Pack/CC_Essential_Cloth_Fabric/images/Main.jpg", "rs": 1}, {"e": false, "p": "Reallusion 3D", "n": "Camo Coat", "v": "", "g": "coats", "u6": "", "vr": "", "note": "Includes: Camo Coat 1–4 · In Character Creator: Outfit > Coats > Modern", "url": "https://marketplace.reallusion.com/camo-coat_343510", "img": "https://dafiles-dl.reallusion.com/Upload/JCCad6c9aa8442afb897/JCCad6c9aa8442afb897_20211227033208_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Blazer", "v": "", "g": "coats", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Coats > Other", "url": "https://marketplace.reallusion.com/blazer-512919", "img": "https://dafiles-dl.reallusion.com/Upload/JCC4368d46ebe5fbb264/JCC4368d46ebe5fbb264_20240417093158_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Cardigan", "v": "", "g": "coats", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Coats > Other", "url": "https://marketplace.reallusion.com/cardigan", "img": "https://dafiles-dl.reallusion.com/Upload/JCCf69c6fa9a52af0057/JCCf69c6fa9a52af0057_20240417093158_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Hoodie", "v": "", "g": "coats", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Coats > Other", "url": "https://marketplace.reallusion.com/hoodie-512926", "img": "https://dafiles-dl.reallusion.com/Upload/JCC8b2b18764320bab28/JCC8b2b18764320bab28_20240417092041_Thumb.jpg"}, {"e": false, "p": "DeAnimation", "n": "Long Coat V2", "v": "", "g": "coats", "u6": "", "vr": "", "note": "Includes: coat, pants, sweater, boots · In Character Creator: Outfit > Coats", "url": "https://marketplace.reallusion.com/long-coat-v2_427455", "img": "https://dafiles-dl.reallusion.com/Upload/JCC1ecccce0a2df89399/JCC1ecccce0a2df89399_20230214022224_Thumb.jpg"}, {"e": false, "p": "Trends", "n": "Free Wind Breakers", "v": "", "g": "coats", "u6": "", "vr": "", "note": "Includes: Wind_Breaker, Wind_Jacket · In Character Creator: Outfit > Coats > Modern", "url": "https://marketplace.reallusion.com/free-wind-breakers", "img": "https://dafiles-dl.reallusion.com/Upload/JCC79d696d9fcc6dfe27/JCC79d696d9fcc6dfe27_20210511165705_Thumb.jpg"}, {"e": false, "p": "Trends", "n": "Free Men's Jacket", "v": "", "g": "full-body", "u6": "", "vr": "", "note": "Includes: jacket, jeans, boots", "url": "https://marketplace.reallusion.com/free-mens-jacket-483909", "img": "https://dafiles-dl.reallusion.com/Upload/JCCe1af1d23543d31767/JCCe1af1d23543d31767_20231215115346_Thumb.jpg", "match": "Listed on the sheet as Men's Jacket."}, {"e": false, "p": "Wolfgar", "n": "Tunic Blouse", "v": "", "g": "full-body", "u6": "", "vr": "", "note": "In Character Creator: Outfit > Shirts > Medieval", "url": "https://marketplace.reallusion.com/female-tunic", "img": "https://dafiles-dl.reallusion.com/Upload/JCC122536ef43e4167d1/JCC122536ef43e4167d1_20230811144640_Thumb.jpg"}, {"e": false, "p": "Delerna", "n": "Pikeman Cloth 1", "v": "", "g": "full-body", "u6": "", "vr": "", "note": "Includes: CC1 Pikeman1Items, CC3 Pikeman01Outfits · In Character Creator: Outfit > Full-body > Other", "url": "https://marketplace.reallusion.com/pikeman-cloth-1", "img": "https://dafiles-dl.reallusion.com/Upload/JCCec72a35162bfc18f0/JCCec72a35162bfc18f0_20190805002752_Thumb.jpg", "match": "Closest listing: Delerna now sells the pikeman cloth, helmets and boots separately — check."}, {"e": false, "p": "Wolfgar", "n": "Japanese Dress 3 Pack", "v": "", "g": "full-body", "u6": "", "vr": "", "note": "Includes: red, purple · In Character Creator: Outfit > Full-body > Modern", "url": "https://marketplace.reallusion.com/japanes-dress", "img": "https://dafiles-dl.reallusion.com/Upload/JCCb6df0f414fa0da828/JCCb6df0f414fa0da828_20240622221938_Thumb.jpg"}, {"e": false, "p": "Pixe4Fiction", "n": "Jumpsuit-Women", "v": "", "g": "full-body", "u6": "", "vr": "", "note": "In Character Creator: Outfit > Full-body > Military", "url": "https://marketplace.reallusion.com/jumpsuit-women", "img": "https://dafiles-dl.reallusion.com/Upload/JCC84cadde56dba1eb66/JCC84cadde56dba1eb66_20220403140315_Thumb.jpg"}, {"e": false, "p": "maxstudioseu", "n": "The 1970s Space Helm", "v": "", "g": "full-body", "u6": "", "vr": "", "note": "In Character Creator: Outfit > Full-body > Sci-Fi", "url": "https://marketplace.reallusion.com/the_1970s_space_helm", "img": "https://dafiles-dl.reallusion.com/Upload/JCC395817d9bbceaf9e3/JCC395817d9bbceaf9e3_20200504201352_Thumb.jpg"}, {"e": false, "p": "Fate Han", "n": "Hair Collection #1", "v": "", "g": "hair", "u6": "", "vr": "", "note": "Includes: Hair 1–4 · In Character Creator: Hair > Realistic", "url": "https://marketplace.reallusion.com/hari-collection-1", "img": "https://dafiles-dl.reallusion.com/Upload/JCC7594cdd45db9547e3/JCC7594cdd45db9547e3_20240801034710_Thumb.jpg", "match": "Fate Han has two 4-hair collections; this links to #1 — check."}, {"e": false, "p": "LeBaronMarket", "n": "Urban Tactical Braided Dreadlocks", "v": "", "g": "hair", "u6": "", "vr": "", "note": "In Character Creator: Hair > Realistic > Long / Medium", "url": "https://marketplace.reallusion.com/f-hair-7", "img": "https://dafiles-dl.reallusion.com/Upload/JCC5520bf61fc634ddd9/JCC5520bf61fc634ddd9_20260430223747_Thumb.jpg", "match": "Best-guess match for Urban Tactical Dreadlocks — check."}, {"e": false, "p": "Guye Wool Curls", "n": "Y_Bun_Hairstyle_01", "v": "", "g": "hair", "u6": "", "vr": "", "note": "Includes: Hairstyle 1–8 · In Character Creator: Hair > Realistic > Medium", "url": "https://marketplace.reallusion.com/y-bun-hairstyle-01_658109", "img": "https://dafiles-dl.reallusion.com/Upload/JCC8a07b201349cca962/JCC8a07b201349cca962_20251112034625_Thumb.jpg"}, {"e": false, "p": "Adam Haruna", "n": "Head Wrap", "v": "", "g": "headgear", "u6": "", "vr": "", "note": "Includes: turban head wrap · In Character Creator: Accessory > Headgear & Hair", "url": "https://marketplace.reallusion.com/head-wrap-505182", "img": "https://dafiles-dl.reallusion.com/Upload/JCCab5cc6594e7c32590/JCCab5cc6594e7c32590_20250401192721_Thumb.png"}, {"e": false, "p": "Reallusion", "n": "Headshot Morph 1000+", "v": "", "g": "morph", "u6": "", "vr": "", "note": "In Character Creator: Actor > Morph > Part Head Morph", "match": "The Content Store now sells this as Headshot Morph 1400+.", "url": "https://www.reallusion.com/ContentStore/Character-Creator/Pack/Headshot-Morph-1400/", "img": "https://www.reallusion.com/ContentStore/Character-Creator/Pack/Headshot-Morph-1400/images/MainBanner_HeadshotMorph.jpg", "rs": 1}, {"e": false, "p": "Reallusion 3D", "n": "Classic Shorts", "v": "", "g": "pants", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Pants > Other", "url": "https://marketplace.reallusion.com/classic-shorts-512923", "img": "https://dafiles-dl.reallusion.com/Upload/JCC7662547040fea9515/JCC7662547040fea9515_20240417092041_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Jogging Pants", "v": "", "g": "pants", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Pants > Other", "url": "https://marketplace.reallusion.com/jogging-pants-512927", "img": "https://dafiles-dl.reallusion.com/Upload/JCC1b141a3a055aaadd9/JCC1b141a3a055aaadd9_20240417092041_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Low-rise Shorts", "v": "", "g": "pants", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Pants > Other", "url": "https://marketplace.reallusion.com/low-rise-shorts-512929", "img": "https://dafiles-dl.reallusion.com/Upload/JCCf774b77e2bdf48e23/JCCf774b77e2bdf48e23_20240417092041_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Skinny Pants", "v": "", "g": "pants", "u6": "", "vr": "", "note": "Includes: Base, A–D · In Character Creator: Outfit > Pants > Other", "url": "https://marketplace.reallusion.com/skinny-pants-512932", "img": "https://dafiles-dl.reallusion.com/Upload/JCCbf08660b78e599709/JCCbf08660b78e599709_20240417092041_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Turned Up Denim Shorts", "v": "", "g": "pants", "u6": "", "vr": "", "note": "Includes: Denim Shorts 1–4 · In Character Creator: Outfit > Pants > Modern", "url": "https://marketplace.reallusion.com/turned-up-denim-shorts", "img": "https://dafiles-dl.reallusion.com/Upload/JCC8a8b8a03cff783ca5/JCC8a8b8a03cff783ca5_20231026040539_Thumb.jpg"}, {"e": false, "p": "DeAnimation", "n": "10 Mens Jumpers", "v": "", "g": "shirts", "u6": "", "vr": "", "note": "Includes: Jumpers 01–10 · In Character Creator: Outfit > Shirts", "url": "https://marketplace.reallusion.com/10-mens-jumpers", "img": "https://dafiles-dl.reallusion.com/Upload/JCC98272b79830003444/JCC98272b79830003444_20211114200105_Thumb.jpg"}, {"e": false, "p": "Reallusion 3D", "n": "Camisole", "v": "", "g": "shirts", "u6": "", "vr": "", "note": "Includes: Camisole A, B · In Character Creator: Outfit > Shirts > Modern", "url": "https://marketplace.reallusion.com/camisole-512920", "img": "https://dafiles-dl.reallusion.com/Upload/JCC45a10bed947278861/JCC45a10bed947278861_20240417093158_Thumb.jpg"}];
+const $=id=>document.getElementById(id);
+const grpTop=g=>g.split(' (')[0].trim();
+const sub=g=>(g.match(/\(([^)]+)\)/)||[])[1]||'';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const groups=[...new Set(DATA.map(d=>grpTop(d.g)))].sort((a,b)=>a.localeCompare(b));
+$('fg').innerHTML='<option value="">All groups</option>'+groups.map(g=>`<option>${esc(g)}</option>`).join('');
+function fillSub(){const g=$('fg').value;const s=[...new Set(DATA.filter(d=>!g||grpTop(d.g)===g).map(d=>sub(d.g)).filter(Boolean))].sort();
+  $('fs').innerHTML='<option value="">All</option>'+s.map(x=>`<option>${esc(x)}</option>`).join('');$('fs').disabled=!s.length;}
+const n=f=>DATA.filter(f).length;
+$('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span>`;
+const state={e:false,v:false,u:false};
+function card(d){
+  const tags=[];
+  if(d.vr==='VR')tags.push('<span class="tag vr">VR</span>');
+  else if(d.vr==='-')tags.push('<span class="tag warn">No VR</span>');
+  else if(d.vr==='?')tags.push('<span class="tag warn">VR untested</span>');
+  if(d.u6==='6')tags.push('<span class="tag u6">Unity 6</span>');
+  else if(d.u6==='-')tags.push('<span class="tag warn">Not Unity 6</span>');
+  else if(d.u6==='?')tags.push('<span class="tag warn">Unity 6 ?</span>');
+  if(d.fab)tags.push('<span class="tag warn">Unreal · Fab</span>');
+  if(d.v)tags.push(`<span class="tag">${esc(d.v)}</span>`);
+  const media=d.img?`<img src="${esc(d.img)}" alt="${esc(d.n)} cover" loading="lazy" referrerpolicy="no-referrer">`
+    :`<span class="none"><b>${esc(d.n.trim()[0]||'?')}</b>${d.s?(d.fab?'Search on Fab':'Search the Asset Store'):'No image'}</span>`;
+  const notes=[d.note,d.match].filter(Boolean).map(t=>`<p class="note">${esc(t)}</p>`).join('');
+  return `<article class="card${d.e?' ess':''}">
+   <a class="ph" href="${esc(d.url)}" target="_blank" rel="noopener" tabindex="-1">${media}</a>
+   <div class="body"><span class="grp">${esc(d.g)}</span><p class="nm">${esc(d.n)}</p><p class="pub">${esc(d.p)}</p>
+   <div class="tags">${tags.join('')}</div>${notes}
+   ${d.doc?`<a class="link doc" href="${esc(d.doc)}" target="_blank" rel="noopener">Documentation ↗</a>`:''}
+   <a class="link${d.s?' s':''}" href="${esc(d.url)}" target="_blank" rel="noopener">${d.rs?'Open on Content Store ↗':'Open on Marketplace ↗'}</a></div></article>`;
+}
+function render(){
+  const q=$('q').value.trim().toLowerCase(),g=$('fg').value;
+  const list=DATA.filter(d=>(!q||(d.n+' '+d.p+' '+d.note+' '+d.g).toLowerCase().includes(q))&&(!g||grpTop(d.g)===g)
+    &&(!state.e||d.e)&&(!state.v||d.vr==='VR')&&(!state.u||d.u6==='6'));
+  list.sort((a,b)=>(b.e-a.e)||grpTop(a.g).localeCompare(grpTop(b.g))||a.n.localeCompare(b.n));
+  $('grid').innerHTML=list.length?list.map(card).join(''):'<p class="empty">No assets match these filters.</p>';
+  $('count').textContent=`${list.length} of ${DATA.length} assets shown`;
+  $('grid').querySelectorAll('img').forEach(im=>im.addEventListener('error',()=>{const p=im.parentElement;im.remove();p.insertAdjacentHTML('afterbegin','<span class="none"><b>·</b>Image unavailable</span>')},{once:true}));
+}
+$('q').addEventListener('input',render);
+$('fg').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>
