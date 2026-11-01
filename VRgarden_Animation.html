@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VRgarden Animation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Archivo:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a project shelf — a sticky filter bar over a grid of package cards; essentials pinned first with a lime tab */
+:root{
+  --bg:#eef0ee; --card:#ffffff; --ink:#15181a; --muted:#5f676b; --line:#d8dcda;
+  --lime:#a7d129; --lime-ink:#2f4a00; --lime-soft:#eef7d6;
+  --vr:#3a5bd9; --vr-soft:#e6ebfc; --warn:#b26b00; --warn-soft:#fbefd9; --chip:#eef1ef; --ph:#e3e7e5;
+  --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#121516; --card:#1b2022; --ink:#e8ecea; --muted:#9aa3a6; --line:#2c3336;
+  --lime:#b8e23a; --lime-ink:#d9f58a; --lime-soft:#26300f;
+  --vr:#8ea6ff; --vr-soft:#1f2747; --warn:#f0b357; --warn-soft:#3a2a12; --chip:#252b2e; --ph:#232a2c; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--display);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px}
+h1{font:800 clamp(28px,4.2vw,44px)/1 var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1 span{background:var(--lime);color:#1a2600;padding:0 .18em;border-radius:4px}
+.sub{color:var(--muted);margin:8px 0 0;max-width:64ch}
+.tally{display:flex;gap:20px;flex-wrap:wrap;font:400 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tally b{display:block;font:800 26px var(--display);color:var(--ink);letter-spacing:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;
+  display:grid;grid-template-columns:2fr repeat(2,minmax(150px,1fr)) auto;gap:10px;align-items:end}
+@media (max-width:800px){.bar{grid-template-columns:1fr 1fr}.bar .q{grid-column:1/-1}.toggles{grid-column:1/-1}}
+.bar label{display:flex;flex-direction:column;gap:4px;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
+.bar input[type=search],.bar select{font:15px var(--display);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+.toggles{display:flex;gap:6px;flex-wrap:wrap}
+.tg{font:600 13px var(--display);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
+.tg[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:focus-visible{outline:2px solid var(--vr);outline-offset:2px}
+.status{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font:12px var(--mono);color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
+.card.ess{border-color:var(--lime);box-shadow:0 0 0 2px var(--lime) inset}
+.ph{aspect-ratio:3/2;max-width:100%;background:var(--ph);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;text-decoration:none;color:var(--muted)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .none{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;text-align:center;font:400 12px var(--mono)}
+.ph .none b{font:800 34px var(--display);color:var(--line)}
+.esstag{position:absolute;left:0;top:10px;background:var(--lime);color:#1a2600;font:700 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:3px 10px 3px 8px;border-radius:0 999px 999px 0}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.grp{font:400 11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.nm{font:700 17px/1.2 var(--display);margin:0;overflow-wrap:anywhere}
+.pub{margin:0;color:var(--muted);font-size:13.5px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:400 11.5px var(--mono);padding:2px 8px;border-radius:4px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.vr{background:var(--vr-soft);color:var(--vr);font-weight:700}
+.tag.u6{background:var(--lime-soft);color:var(--lime-ink);font-weight:700}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.note{margin:0;font-size:13px;color:var(--muted);border-left:2px solid var(--line);padding-left:8px;overflow-wrap:anywhere}
+.link{margin-top:auto;padding-top:4px;font:700 13px var(--display);color:var(--vr);text-decoration:none}
+.link:hover{text-decoration:underline}
+.link.s{color:var(--muted)}
+.link.doc+.link{margin-top:0;padding-top:0}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;max-width:95ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>VRgarden <span> animation</span></h1>
+    <p class="sub">This library contains animation packs, motion-capture sets and animator tools (AI, camera, ragdoll and tweening) from the Unity Asset Store. Each card links to the asset’s store page and, where available, its documentation. Cards also show details such as the version and any compatibility issues. Essentials are the assets we use most often in the course.</p>
+  </div>
+  <div class="tally" id="tally"></div>
+</header>
+<section class="bar" aria-label="Filters">
+  <label class="q" for="q">Search<input id="q" type="search" placeholder="Name, publisher or note"></label>
+  <label for="fg">Group<select id="fg"></select></label>
+  <label for="fs">Subgroup<select id="fs"></select></label>
+  <div class="toggles" role="group" aria-label="Quick filters">
+    <button class="tg" id="te" aria-pressed="false">Essential</button>
+    <button class="tg" id="tv" aria-pressed="false">VR</button>
+    <button class="tg" id="t6" aria-pressed="false">Unity 6</button>
+  </div>
+</section>
+
+<div class="status"><span id="count"></span></div>
+<main class="grid" id="grid"></main>
+<footer>Data from your VRgarden asset sheet. Asset Store links and cover images were matched by name and publisher in October 2026. Where no reliable match was found, the card links to a store search instead and shows no image. A few links point to the closest current listing, and the card says so.</footer>
+</div>
+<script>
+const DATA=[{"e": false, "p": "Ida Faber", "n": "Business Lady Office Girls", "v": "1.0 (2026)", "g": "animation", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/351792", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/473c1fc9-e977-40fb-b931-5c567a3ce5a1.png?v=1"}, {"e": true, "p": "ActiveAnimation", "n": "AA Sleep", "v": "1.0.0 (2023)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/245974", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/6cf0b7df-c385-446d-8e82-fdaf3807baf6.jpg?v=1"}, {"e": false, "p": "Amplify Creation", "n": "Amplify Animation Pack", "v": "1.01 (2022)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/207911", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/809da763-6c54-4f4a-bf24-c8eaba28e900.jpg?v=1"}, {"e": true, "p": "Fudastore", "n": "Kawai Animation", "v": "1.9.1 (2025)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/277585", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/e19439bf-4436-46fc-8d2b-3e040148b16b.jpg?v=1"}, {"e": false, "p": "Kubold", "n": "Walk Animset Basic", "v": "1.1 (2015)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/21922", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/9ff8d3a2-f3b9-450c-a06f-9e9a0c839985.jpg?v=1"}, {"e": true, "p": "Kubold", "n": "Survival Animset Pro vol.1", "v": "1.0 (2018)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/112577", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/e7ad456c-39a5-4339-bae6-e23266694f34.png?v=1"}, {"e": true, "p": "Mocap Central", "n": "MC Greet and Talk", "v": "1.0.0 (2024)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/288923", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/0632103f-ea75-4f91-868f-f763ace319ad.jpg?v=1"}, {"e": true, "p": "Mocap Central", "n": "MC Idles", "v": "1.0.0 (2024)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/290208", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/1d6ff701-f860-4e59-a410-f54519be4c4d.jpg?v=1"}, {"e": true, "p": "Mocap Central", "n": "MC Seated", "v": "1.0.0 (2024)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/289895", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/ceb2d057-398a-44a7-bf69-e9cd171cc155.jpg?v=1"}, {"e": false, "p": "Opsive", "n": "Omni Animation - Core Locomotion", "v": "1.0.1 (2024)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/286945", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/35169863-4408-4a2d-b6b6-8ddd25722ed7.jpg?v=1", "doc": "https://opsive.com/support/documentation/ultimate-character-controller/integrations/omni-animation-packs/"}, {"e": true, "p": "Synty", "n": "Synty Animation - Idles", "v": "1.1.2 (2025)", "g": "animation (mocap)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/299700", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/d9ce2b43-320d-486f-a2b0-23ebb80dd626.jpg?v=1"}, {"e": true, "p": "Aikodex", "n": "Simple Bicycle Physics", "v": "2.5 (2023)", "g": "animation (transport)", "u6": "", "vr": "VR", "note": null, "url": "https://assetstore.unity.com/packages/slug/206818", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/5651809c-9630-4962-842d-0e586f8ae609.jpg?v=1"}, {"e": false, "p": "TwoSpeces", "n": "Snowmobile Physics", "v": "1 (2024)", "g": "animation (transport)", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/292080", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/cdb0ca93-6e20-4f1e-8206-b7c7ba4ab5d3.jpg?v=1", "match": "Best-guess match — check the listing."}, {"e": false, "p": "Ashqar Apps", "n": "Dynamic Joint Chain Pro", "v": "1.0 (2022)", "g": "animator", "u6": "6", "vr": "", "note": "spring dynamics to individual joints or joint-chains", "url": "https://assetstore.unity.com/packages/slug/224121", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/5c8e7daf-46b4-4f78-beb8-53122ab76612.jpg?v=1"}, {"e": false, "p": "FImpossible Creations", "n": "Animation Designer", "v": "1.2.5.3 (2023)", "g": "animator", "u6": "6", "vr": "", "note": "animation repair or modification", "url": "https://assetstore.unity.com/packages/slug/210513", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/a1918541-64f6-441c-8cfe-d4929184d492.jpg?v=1", "doc": "https://www.filipmoeglich.pl/download/Animation%20Designer%20User%20Manual.pdf"}, {"e": false, "p": "FImpossible Creations", "n": "Legs Animator", "v": "1.0.4.4 (2025)", "g": "animator", "u6": "", "vr": "", "note": "legs animator", "url": "https://assetstore.unity.com/packages/slug/154245", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/0f4aeabe-cc74-4511-9f00-711f9cd2c5c0.jpg?v=1", "doc": "https://www.filipmoeglich.pl/download/Legs%20Animator%20-%20User%20Manual.pdf"}, {"e": false, "p": "Kybernetic", "n": "Animancer Pro", "v": "8.11 (2025)", "g": "animator", "u6": "6", "vr": "", "note": "animation without controllers", "url": "https://assetstore.unity.com/packages/slug/293522", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/b302fa59-853b-452f-b4a7-d6fae099f3dd.png?v=1", "doc": "https://kybernetik.com.au/animancer/docs/"}, {"e": false, "p": "RamsterZ", "n": "Dialogue Anims", "v": "1.0 (2022)", "g": "animator", "u6": "", "vr": "", "note": "dialogue editor", "url": "https://assetstore.unity.com/packages/slug/222285", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/6edeacca-c700-4d69-9afc-fa0bd0d35f0f.jpg?v=1"}, {"e": false, "p": "Rootmotion", "n": "Final IK", "v": "2.4 (2025)", "g": "animator", "u6": "6", "vr": "", "note": "the best inverse kinematics solution", "url": "https://assetstore.unity.com/packages/slug/14290", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/aea4b049-1964-46a9-a30c-07ed1131758d.png?v=1", "doc": "http://www.root-motion.com/finalikdox/html/index.html"}, {"e": false, "p": "Rowlan", "n": "Animation Preview Pro", "v": "1.9.0 (2025)", "g": "animator", "u6": "6", "vr": "", "note": "preview how a character looks like in your scene in different poses.", "url": "https://assetstore.unity.com/packages/slug/227335", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/361f62ec-84bf-40a3-8847-ba63d4f93c1b.jpg?v=1"}, {"e": false, "p": "Soxware Interactive", "n": "UMotion Pro - animation Editor", "v": "1.29p04 (2025)", "g": "animator", "u6": "", "vr": "", "note": "animation Editor", "url": "https://assetstore.unity.com/packages/slug/95991", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/fd686c64-914d-4d54-9164-396d6eebc8bc.png?v=1", "doc": "https://www.soxware.com/umotion-manual/UMotionManual.html"}, {"e": false, "p": "ThreePeat Games", "n": "Animation Importer", "v": "0.2 (2024)", "g": "animator", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/273156", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/54687e8c-7715-4893-a482-295e1c73e829.png?v=1", "doc": "https://www.threepeatgames.com/anim_importer/"}, {"e": false, "p": "ThreePeat Games", "n": "Motion-Matching Locomotion Controller", "v": "0.5 (2025)", "g": "animator", "u6": "", "vr": "VR", "note": "requires Motion Matching for Unity (MxM), also see strider and dreamteck splines", "url": "https://assetstore.unity.com/packages/slug/243179", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/97783247-87bb-4d9a-bb6c-2b639dcdedca.png?v=1", "doc": "https://www.threepeatgames.com/mmc_locomotion/"}, {"e": false, "p": "Vault Break Studios", "n": "Motion Matching for Unity (MxM)", "v": "2.3.2 (2025)", "g": "animator", "u6": "6", "vr": "VR", "note": "animation system to mecanim", "url": "https://assetstore.unity.com/packages/slug/145624", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/07ede55e-72f9-4a3c-98e0-c9d3f989c056.png?v=1", "doc": "https://motion-matching-for-unity.readthedocs.io/en/latest/"}, {"e": false, "p": "Viazz", "n": "Motion Matching System (MMS)", "v": "1.3.4 (2024)", "g": "animator", "u6": "", "vr": "", "note": "animation without controllers", "url": "https://assetstore.unity.com/packages/slug/257707", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/ef22c76e-4968-4576-8308-54fb0d1014ce.jpg?v=1"}, {"e": false, "p": "Aron Granberg", "n": "A* Pathfinding Project Pro", "v": "5.2.5 (2024)", "g": "animator (AI)", "u6": "", "vr": "", "note": "pathfinding system", "url": "https://assetstore.unity.com/packages/slug/87744", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/18e1addc-368e-408d-80f6-137aec729766.png?v=1", "doc": "https://arongranberg.com/astar/docs/"}, {"e": false, "p": "Bard Tree Limited", "n": "CIVIL-AI-System", "v": "0.10.2 (2025)", "g": "animator (AI)", "u6": "", "vr": "", "note": "NPC animations AI controller", "url": "https://assetstore.unity.com/packages/slug/231069", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/f6e14e30-7122-4e11-b760-5656f3341e58.jpg?v=1", "doc": "https://bardtreelimited.com/docs/service-overview"}, {"e": false, "p": "Clockworks Games", "n": "NPC Populator", "v": "2.1", "g": "animator (AI)", "u6": "6", "vr": "", "note": "NPC simple animation", "url": "https://assetstore.unity.com/packages/slug/95019", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/68f2ddd1-1c2b-4232-b031-80119d28c9ab.jpg?v=1"}, {"e": false, "p": "Opsive", "n": "Behavior Designer", "v": "1.7 (2021)", "g": "animator (AI)", "u6": "6", "vr": "", "note": "NPC using Behavior Trees", "url": "https://assetstore.unity.com/packages/slug/15277", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/57e13c1b-3432-4a3b-860c-b82182d6eac7.jpg?v=1", "doc": "https://opsive.com/support/documentation/behavior-designer/"}, {"e": true, "p": "Procedural Worlds", "n": "Pegasus", "v": "2.5.4 (2023)", "g": "animator (camera)", "u6": "6", "vr": "", "note": "flythroughs animation controller", "url": "https://assetstore.unity.com/packages/slug/65397", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/56ea2d98-33fc-4678-b213-93f0358d88d5.png?v=1", "doc": "https://canopy.procedural-worlds.com/library/tools/pegasus/39_tutorials/"}, {"e": false, "p": "FImpossible Creations", "n": "Ragdoll Animator", "v": "1.2.5 (2025)", "g": "animator (ragdoll)", "u6": "", "vr": "", "note": "ragdoll animator (version 2 released)", "url": "https://assetstore.unity.com/packages/slug/209616", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/b8d81c9f-8fce-4aaf-89be-176d5563d413.jpg?v=1", "doc": "https://www.filipmoeglich.pl/download/Ragdoll%20Animator%20-%20User%20Manual.pdf"}, {"e": false, "p": "Rootmotion", "n": "Puppetmaster", "v": "1.4 (2025)", "g": "animator (ragdoll)", "u6": "6", "vr": "", "note": "advanced active ragdoll physics", "url": "https://assetstore.unity.com/packages/slug/48977", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/9c196e86-0417-4d58-a373-e3330fc79b03.png?v=1", "doc": "http://root-motion.com/puppetmasterdox/html/index.html"}, {"e": false, "p": "Demigiant", "n": "DOTween Pro", "v": "1.0.3 (2022)", "g": "animator (tween)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/32416", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/2e9fc555-b4d2-4f7b-9b82-5eaf30a853e3.png?v=1", "doc": "https://dotween.demigiant.com/documentation.php"}, {"e": false, "p": "Dented Pixel", "n": "LeanTween", "v": "2.51 (2021)", "g": "animator (tween)", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/3595", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/cc670530-92cb-4f04-9970-9d9bc28fad53.jpg?v=1", "doc": "http://dentedpixel.com/LeanTweenDocumentation/classes/LeanTween.html"}, {"e": false, "p": "Flobuk", "n": "Simple Waypoint System", "v": "5.5.2 (2023)", "g": "animator (tween)", "u6": "6", "vr": "", "note": "waypoints", "url": "https://assetstore.unity.com/packages/slug/2506", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/0624dd06-8149-443d-8ed7-5448c2859080.jpg?v=1", "doc": "https://flobuk.gitlab.io/assets/docs/unity/sws/getting-started/"}, {"e": false, "p": "Kyrylo Kuzyk", "n": "PrimeTween PRO", "v": "1.4 (2026)", "g": "animator (tween)", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/373496", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/eb1921d3-b4db-4493-9793-49cbd2639aba.jpg?v=1", "doc": "https://github.com/KyryloKuzyk/PrimeTween"}, {"e": false, "p": "PIXELplacement", "n": "iTween", "v": "2.0.10 (2019)", "g": "animator (tween)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/84", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/915ca927-6e73-4dfb-b5b7-d1a042f3d033.jpg?v=1", "doc": "http://www.pixelplacement.com/itween/documentation.php"}, {"e": false, "p": "PIXELplacement", "n": "iTween Examples", "v": "1.0.8 (2019)", "g": "animator (tween)", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/18388", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/1dfa067d-d456-462d-825c-868d24a513a2.jpg?v=1", "doc": "http://www.pixelplacement.com/itween/documentation.php"}];
+const $=id=>document.getElementById(id);
+const grpTop=g=>g.split(' (')[0].trim();
+const sub=g=>(g.match(/\(([^)]+)\)/)||[])[1]||'';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const groups=[...new Set(DATA.map(d=>grpTop(d.g)))].sort((a,b)=>a.localeCompare(b));
+$('fg').innerHTML='<option value="">All groups</option>'+groups.map(g=>`<option>${esc(g)}</option>`).join('');
+function fillSub(){const g=$('fg').value;const s=[...new Set(DATA.filter(d=>!g||grpTop(d.g)===g).map(d=>sub(d.g)).filter(Boolean))].sort();
+  $('fs').innerHTML='<option value="">All</option>'+s.map(x=>`<option>${esc(x)}</option>`).join('');$('fs').disabled=!s.length;}
+fillSub();
+const n=f=>DATA.filter(f).length;
+$('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span><span><b>${n(d=>d.e)}</b>essential</span>`;
+const state={e:false,v:false,u:false};
+[['te','e'],['tv','v'],['t6','u']].forEach(([id,k])=>$(id).addEventListener('click',e=>{state[k]=!state[k];e.currentTarget.setAttribute('aria-pressed',state[k]);render()}));
+function card(d){
+  const tags=[];
+  if(d.vr==='VR')tags.push('<span class="tag vr">VR</span>');
+  else if(d.vr==='-')tags.push('<span class="tag warn">No VR</span>');
+  else if(d.vr==='?')tags.push('<span class="tag warn">VR untested</span>');
+  if(d.u6==='6')tags.push('<span class="tag u6">Unity 6</span>');
+  else if(d.u6==='-')tags.push('<span class="tag warn">Not Unity 6</span>');
+  else if(d.u6==='?')tags.push('<span class="tag warn">Unity 6 ?</span>');
+  if(d.fab)tags.push('<span class="tag warn">Unreal · Fab</span>');
+  if(d.v)tags.push(`<span class="tag">${esc(d.v)}</span>`);
+  const media=d.img?`<img src="${esc(d.img)}" alt="${esc(d.n)} cover" loading="lazy" referrerpolicy="no-referrer">`
+    :`<span class="none"><b>${esc(d.n.trim()[0]||'?')}</b>${d.s?(d.fab?'Search on Fab':'Search the Asset Store'):'No image'}</span>`;
+  const notes=[d.note,d.match].filter(Boolean).map(t=>`<p class="note">${esc(t)}</p>`).join('');
+  return `<article class="card${d.e?' ess':''}">
+   <a class="ph" href="${esc(d.url)}" target="_blank" rel="noopener" tabindex="-1">${media}${d.e?'<span class="esstag">Essential</span>':''}</a>
+   <div class="body"><span class="grp">${esc(d.g)}</span><p class="nm">${esc(d.n)}</p><p class="pub">${esc(d.p)}</p>
+   <div class="tags">${tags.join('')}</div>${notes}
+   ${d.doc?`<a class="link doc" href="${esc(d.doc)}" target="_blank" rel="noopener">Documentation ↗</a>`:''}
+   <a class="link${d.s?' s':''}" href="${esc(d.url)}" target="_blank" rel="noopener">${d.fab?(d.s?'Search on Fab ↗':'Open on Fab ↗'):(d.s?'Search on Asset Store ↗':'Open on Asset Store ↗')}</a></div></article>`;
+}
+function render(){
+  const q=$('q').value.trim().toLowerCase(),g=$('fg').value,s=$('fs').value;
+  const list=DATA.filter(d=>(!q||(d.n+' '+d.p+' '+d.note+' '+d.g).toLowerCase().includes(q))&&(!g||grpTop(d.g)===g)&&(!s||sub(d.g)===s)
+    &&(!state.e||d.e)&&(!state.v||d.vr==='VR')&&(!state.u||d.u6==='6'));
+  list.sort((a,b)=>(b.e-a.e)||grpTop(a.g).localeCompare(grpTop(b.g))||a.n.localeCompare(b.n));
+  $('grid').innerHTML=list.length?list.map(card).join(''):'<p class="empty">No assets match these filters.</p>';
+  $('count').textContent=`${list.length} of ${DATA.length} assets shown`;
+  $('grid').querySelectorAll('img').forEach(im=>im.addEventListener('error',()=>{const p=im.parentElement;im.remove();p.insertAdjacentHTML('afterbegin','<span class="none"><b>·</b>Image unavailable</span>')},{once:true}));
+}
+$('q').addEventListener('input',render);
+$('fg').addEventListener('change',()=>{fillSub();render()});
+$('fs').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>
