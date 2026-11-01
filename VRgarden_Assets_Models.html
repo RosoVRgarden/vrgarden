@@ -32,7 +32,7 @@ h1 span{background:var(--lime);color:#1a2600;padding:0 .18em;border-radius:4px}
 .tally{display:flex;gap:20px;flex-wrap:wrap;font:400 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .tally b{display:block;font:800 26px var(--display);color:var(--ink);letter-spacing:0}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;
-  display:grid;grid-template-columns:2fr minmax(180px,1fr) auto;gap:10px;align-items:end}
+  display:grid;grid-template-columns:2fr minmax(180px,1fr);gap:10px;align-items:end}
 @media (max-width:800px){.bar{grid-template-columns:1fr}}
 .bar label{display:flex;flex-direction:column;gap:4px;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
 .bar input[type=search],.bar select{font:15px var(--display);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
@@ -79,11 +79,6 @@ footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padd
 <section class="bar" aria-label="Filters">
   <label class="q" for="q">Search<input id="q" type="search" placeholder="Name, publisher or note"></label>
   <label for="fg">Group<select id="fg"></select></label>
-  <div class="toggles" role="group" aria-label="Quick filters">
-    <button class="tg" id="te" aria-pressed="false">Essential</button>
-    <button class="tg" id="tv" aria-pressed="false">VR</button>
-    <button class="tg" id="t6" aria-pressed="false">Unity 6</button>
-  </div>
 </section>
 
 <div class="status"><span id="count"></span></div>
@@ -103,7 +98,6 @@ function fillSub(){const g=$('fg').value;const s=[...new Set(DATA.filter(d=>!g||
 const n=f=>DATA.filter(f).length;
 $('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span><span><b>${n(d=>d.e)}</b>essential</span>`;
 const state={e:false,v:false,u:false};
-[['te','e'],['tv','v'],['t6','u']].forEach(([id,k])=>$(id).addEventListener('click',e=>{state[k]=!state[k];e.currentTarget.setAttribute('aria-pressed',state[k]);render()}));
 function card(d){
   const tags=[];
   if(d.vr==='VR')tags.push('<span class="tag vr">VR</span>');
@@ -127,8 +121,7 @@ function card(d){
 }
 function render(){
   const q=$('q').value.trim().toLowerCase(),g=$('fg').value;
-  const list=DATA.filter(d=>(!q||(d.n+' '+d.p+' '+d.note+' '+d.g).toLowerCase().includes(q))&&(!g||grpTop(d.g)===g)
-    &&(!state.e||d.e)&&(!state.v||d.vr==='VR')&&(!state.u||d.u6==='6'));
+  const list=DATA.filter(d=>(!q||(d.n+' '+d.p+' '+d.note+' '+d.g).toLowerCase().includes(q))&&(!g||grpTop(d.g)===g));
   list.sort((a,b)=>(b.e-a.e)||grpTop(a.g).localeCompare(grpTop(b.g))||a.n.localeCompare(b.n));
   $('grid').innerHTML=list.length?list.map(card).join(''):'<p class="empty">No assets match these filters.</p>';
   $('count').textContent=`${list.length} of ${DATA.length} assets shown`;
