@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VRgarden · Libraries</title>
+<title>VRgarden Architecture Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -34,6 +34,7 @@ a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:var(--
 .band.interaction{background:linear-gradient(160deg,#1f2747,#3a5bd9 55%,#b5c4f5)}
 .band.finishing{background:linear-gradient(160deg,#f2c14e,#f7dc8c 55%,#fbf3d9)}
 .band.ui{background:linear-gradient(160deg,#4b1f5c,#a0479e 55%,#f1c9e6)}
+.band.misc{background:linear-gradient(160deg,#3a3f42,#6f777b 55%,#cfd4d1)}
 .band.unity{background:linear-gradient(160deg,#16181a,#2d3436 55%,#b6e03a)}
 .band svg{position:absolute;right:16px;top:16px;opacity:.9}
 .tag{font-family:"Space Mono",monospace;font-size:12px;background:rgba(255,255,255,.92);color:#16181a;padding:4px 8px;border-radius:6px}
@@ -48,8 +49,8 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
 <body>
 <div class="wrap">
   <p class="kicker"></p>
-  <h1>VRgarden <span>libraries</span></h1>
-  <p class="lead">Reference libraries for VRgarden Architectural studio at Feng-Chia University. It contains asset libraries such as workflow, interaction and finishing tools, models, nature and world building from the Unity asset store and Fab.com, Reallusion characters, the animation library, the sound library and the trees and plants in Taiwan.</p>
+  <h1>VRgarden <span>Architecture Studio</span></h1>
+  <p class="lead">Reference libraries for the VRgarden Architecture Studio at Feng-Chia University. It contains asset libraries such as models, nature elements and world building from the Unity asset store and Fab.com, Reallusion characters, the animation library, the sound library, the trees and plants in Taiwan and workflows, interaction and finishing tools.</p>
   <div class="grid">
     <a class="card" href="VRgarden_Workflow.html">
       <div class="band unity">
@@ -58,7 +59,7 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
       </div>
       <div class="body">
         <h2>Unity workflows</h2>
-        <p>Editor tools, asset management and importing, modelling and level-building tools, with essentials first and links to the Unity Asset Store.</p>
+        <p>Editor tools, asset management and importing, modelling and level-building tools.</p>
         <span class="go">Open catalogue →</span>
       </div>
     </a>
@@ -69,7 +70,7 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
       </div>
       <div class="body">
         <h2>World Building</h2>
-        <p>MicroVerse with its biomes, presets and tools, plus the environment packs that work with it, linked to the Unity Asset Store.</p>
+        <p>MicroVerse with its biomes, presets and tools, plus the environment packs that work with it. Also check Stamping for a variety of heightmaps.</p>
         <span class="go">Open catalogue →</span>
       </div>
     </a>
@@ -91,7 +92,7 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
       </div>
       <div class="body">
         <h2>Models</h2>
-        <p>3D models and environments: cities, buildings, interiors and props linked to the Unity Asset Store or Fab.</p>
+        <p>3D models and environments: cities, buildings, interiors and props linked to the Unity Asset Store or Fab. Also check the Gallery for details of often-used models.</p>
         <span class="go">Open catalogue →</span>
       </div>
     </a>
@@ -113,7 +114,7 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
       </div>
       <div class="body">
         <h2>Nature</h2>
-        <p>Vegetation, trees, animals, textures, terrain tools, water, skies and weather, with essentials pinned first and links to the Unity Asset Store.</p>
+        <p>Vegetation, trees, textures, terrain tools, water, skies and weather.</p>
         <span class="go">Open catalogue →</span>
       </div>
     </a>
@@ -146,7 +147,7 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
       </div>
       <div class="body">
         <h2>Animation</h2>
-        <p>Animation packs, motion capture and animator tools (AI, camera, ragdoll and tweening), linked to the Unity Asset Store.</p>
+        <p>Animation packs, motion capture, animated animals and animator tools (AI, camera, ragdoll and tweening).</p>
         <span class="go">Open catalogue →</span>
       </div>
     </a>
@@ -168,7 +169,7 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
       </div>
       <div class="body">
         <h2>Interaction</h2>
-        <p>VR, audio, simulation and runtime tools that make a scene interactive, linked to the Unity Asset Store.</p>
+        <p>VR, audio, simulation and runtime tools that make a scene interactive.</p>
         <span class="go">Open catalogue →</span>
       </div>
     </a>
@@ -179,7 +180,7 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
       </div>
       <div class="body">
         <h2>Finishing</h2>
-        <p>Lighting, shaders and colour, optimisation and presentation tools, with essentials first and links to the Unity Asset Store.</p>
+        <p>Lighting, shaders and colour, optimisation and presentation tools.</p>
         <span class="go">Open catalogue →</span>
       </div>
     </a>
@@ -190,12 +191,23 @@ footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text
       </div>
       <div class="body">
         <h2>User Interface</h2>
-        <p>User interface tools and kits for menus, screens and icons, linked to the Unity Asset Store.</p>
+        <p>User interface tools and kits for menus, screens and icons.</p>
+        <span class="go">Open catalogue →</span>
+      </div>
+    </a>
+    <a class="card" href="VRgarden_Misc.html">
+      <div class="band misc">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="8" y="8" width="20" height="20" rx="3" stroke="#ffffff" stroke-width="3"/><rect x="36" y="8" width="20" height="20" rx="3" stroke="#ffffff" stroke-width="3"/><rect x="8" y="36" width="20" height="20" rx="3" stroke="#ffffff" stroke-width="3"/><circle cx="46" cy="46" r="10" stroke="#ffffff" stroke-width="3"/></svg>
+        <span class="tag">Unity · Misc</span>
+      </div>
+      <div class="body">
+        <h2>Misc assets</h2>
+        <p>Other tools and assets that we use less often: editor, modelling and level-building tools, runtime and simulation tools, and nature assets.</p>
         <span class="go">Open catalogue →</span>
       </div>
     </a>
   </div>
 </div>
-<footer>Copyright Feng Chia VRgarden (October 2026)</footer>
+<footer>Copyright Feng-Chia University &amp; VRgarden Architecture Studio (October 2026)<br>Asset names, images and trademarks belong to their respective creators and publishers.</footer>
 </body>
 </html>
