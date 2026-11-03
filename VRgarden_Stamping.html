@@ -96,7 +96,7 @@ $('fg').innerHTML='<option value="">All groups</option>'+groups.map(g=>`<option>
 function fillSub(){const g=$('fg').value;const s=[...new Set(DATA.filter(d=>!g||grpTop(d.g)===g).map(d=>sub(d.g)).filter(Boolean))].sort();
   $('fs').innerHTML='<option value="">All</option>'+s.map(x=>`<option>${esc(x)}</option>`).join('');$('fs').disabled=!s.length;}
 const n=f=>DATA.filter(f).length;
-$('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span><span><b>${n(d=>d.e)}</b>essential</span>`;
+$('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span>`;
 const state={e:false,v:false,u:false};
 function card(d){
   const tags=[];
