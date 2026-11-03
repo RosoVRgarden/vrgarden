@@ -21,7 +21,7 @@ h1 span{background:var(--lime);color:var(--lime-ink);padding:0 .15em;font-size:.
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
 a.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .15s,border-color .15s,box-shadow .15s}
 a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.08);outline:none}
-.band{height:150px;display:flex;align-items:flex-end;padding:18px;position:relative}
+.band{height:96px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;position:relative}
 .band.trees{background:linear-gradient(160deg,#2f6b3a,#5f9c4f 60%,#c9dd9a)}
 .band.sound{background:linear-gradient(160deg,#b6e03a,#dff0a8 60%,#f4f4ef)}
 .band.nature{background:linear-gradient(160deg,#1f4d2b,#3f7f4a 55%,#9fc76a)}
@@ -36,7 +36,7 @@ a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:var(--
 .band.ui{background:linear-gradient(160deg,#4b1f5c,#a0479e 55%,#f1c9e6)}
 .band.misc{background:linear-gradient(160deg,#3a3f42,#6f777b 55%,#cfd4d1)}
 .band.unity{background:linear-gradient(160deg,#16181a,#2d3436 55%,#b6e03a)}
-.band svg{position:absolute;right:16px;top:16px;opacity:.9}
+.band svg{order:2;flex:none;width:56px;height:56px;opacity:.9}
 .tag{font-family:"Space Mono",monospace;font-size:12px;background:rgba(255,255,255,.92);color:#16181a;padding:4px 8px;border-radius:6px}
 .body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:8px;flex:1}
 .body h2{margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em}
