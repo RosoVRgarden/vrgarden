@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VRgarden Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Archivo:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#eef0ee; --card:#ffffff; --ink:#15181a; --muted:#5f676b; --line:#d8dcda;
+  --lime:#a7d129; --lime-ink:#1a2600; --ph:#e3e7e5; --vr:#3a5bd9;
+  --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#121516; --card:#1b2022; --ink:#e8ecea; --muted:#9aa3a6; --line:#2c3336;
+  --lime:#b8e23a; --lime-ink:#1a2600; --ph:#232a2c; --vr:#8ea6ff; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--display);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px}
+h1{font:800 clamp(28px,4.2vw,44px)/1 var(--display);margin:0;letter-spacing:-.02em}
+h1 span{background:var(--lime);color:#1a2600;padding:0 .18em;border-radius:4px}
+.sub{color:var(--muted);margin:8px 0 0;max-width:64ch}
+.tally{display:flex;gap:20px;font:400 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tally b{display:block;font:800 26px var(--display);color:var(--ink);letter-spacing:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:end}
+.bar label{display:flex;flex-direction:column;gap:4px;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);flex:1;max-width:360px}
+.bar select{font:15px var(--display);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+:focus-visible{outline:2px solid var(--vr);outline-offset:2px}
+#sets{display:flex;flex-direction:column;gap:28px}
+.set{display:flex;flex-direction:column;gap:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.tile{aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--ph);border:1px solid var(--line);min-width:0}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.name{background:#000;color:#fff;border-color:#000;display:flex;flex-direction:column;justify-content:space-between;padding:18px}
+.name .k{font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.08em;opacity:.7}
+.name h2{font:800 clamp(20px,2vw,26px)/1.1 var(--display);margin:6px 0 0;letter-spacing:-.01em;white-space:nowrap}
+.name .n{font:400 12px var(--mono);opacity:.7;margin-top:10px}
+.name a{display:inline-block;align-self:flex-start;background:var(--lime);color:var(--lime-ink);font:700 13px var(--mono);text-decoration:none;padding:9px 12px;border-radius:6px}
+.name a:hover{filter:brightness(1.08)}
+@media (max-width:520px){.grid{grid-template-columns:1fr;gap:10px}}
+footer{font:12px var(--mono);color:var(--muted);text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>VRgarden <span>gallery</span></h1>
+    <p class="sub">Gallery of images from ArchVizPRO interiors and Survivor Base assets.</p>
+  </div>
+  <div class="tally" id="tally"></div>
+</header>
+<section class="bar" aria-label="Filter">
+  <label for="fs">Set<select id="fs"></select></label>
+</section>
+<main id="sets"></main>
+<footer>Copyright FCU Architecture VRgarden (2026)</footer>
+</div>
+<script>
+const W='https://raw.githubusercontent.com/wiki/RosoVRgarden/VRgarden-tutorials/images/';
+const A=n=>'archviz/archviz'+String(n).padStart(2,'0')+'.jpg';
+const SETS=[
+ {n:'ArchViz Pro 2',k:'ArchVizPRO',url:'https://assetstore.unity.com/packages/slug/281948',img:[1,2,3,4,5].map(A)},
+ {n:'ArchViz Pro 3',k:'ArchVizPRO',url:'https://assetstore.unity.com/packages/slug/164942',img:[6,7,8,9,10,11,12,13].map(A)},
+ {n:'ArchViz Pro 5',k:'ArchVizPRO',url:'https://assetstore.unity.com/packages/slug/180941',img:[14,15,16,17,18,19,20,21].map(A)},
+ {n:'ArchViz Pro 6',k:'ArchVizPRO',url:'https://assetstore.unity.com/packages/slug/274067',img:[24,25,26,27,28,29,30,31].map(A)},
+ {n:'ArchViz Pro 7',k:'ArchVizPRO',url:'https://assetstore.unity.com/packages/slug/155448',img:[32,33,34,35,36].map(A)},
+ {n:'ArchViz Pro 8',k:'ArchVizPRO',url:'https://assetstore.unity.com/packages/slug/226014',img:[37,38,39,40,41,42,43,44,45,46].map(A)},
+ {n:'ArchViz Pro 9',k:'ArchVizPRO',url:'https://assetstore.unity.com/packages/slug/236479',img:[47,48,49].map(A)},
+ {n:'ArchViz Pro 10',k:'ArchVizPRO',url:'https://assetstore.unity.com/packages/slug/255834',img:[52,53,58,59,60,61,62].map(A)},
+ {n:'Survivor Base',k:'Quadart',url:'https://assetstore.unity.com/packages/slug/315274',img:[1,2,3,4,5,6].map(i=>'survivor'+i+'.jpg')}
+];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('tally').innerHTML=`<span><b>${SETS.length}</b>sets</span><span><b>${SETS.reduce((t,s)=>t+s.img.length,0)}</b>images</span>`;
+$('fs').innerHTML='<option value="">All sets</option>'+SETS.map((s,i)=>`<option value="${i}">${esc(s.n)}</option>`).join('');
+function render(){
+  const v=$('fs').value;
+  $('sets').innerHTML='<div class="grid">'+SETS.map((s,i)=>(v!==''&&+v!==i)?'':`
+    <div class="tile name"><div><span class="k">${esc(s.k)}</span><h2>${esc(s.n)}</h2><div class="n">${s.img.length} images</div></div>
+    <a href="${esc(s.url)}" target="_blank" rel="noopener">Open on Asset Store ↗</a></div>
+    ${s.img.map(f=>`<div class="tile"><img src="${W+f}" alt="${esc(s.n)} screenshot" loading="lazy" referrerpolicy="no-referrer"></div>`).join('')}
+  `).join('')+'</div>';
+}
+$('fs').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>
