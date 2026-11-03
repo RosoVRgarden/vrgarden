@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VRgarden Interaction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Archivo:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a project shelf — a sticky filter bar over a grid of package cards; essentials pinned first with a lime tab */
+:root{
+  --bg:#eef0ee; --card:#ffffff; --ink:#15181a; --muted:#5f676b; --line:#d8dcda;
+  --lime:#a7d129; --lime-ink:#2f4a00; --lime-soft:#eef7d6;
+  --vr:#3a5bd9; --vr-soft:#e6ebfc; --warn:#b26b00; --warn-soft:#fbefd9; --chip:#eef1ef; --ph:#e3e7e5;
+  --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#121516; --card:#1b2022; --ink:#e8ecea; --muted:#9aa3a6; --line:#2c3336;
+  --lime:#b8e23a; --lime-ink:#d9f58a; --lime-soft:#26300f;
+  --vr:#8ea6ff; --vr-soft:#1f2747; --warn:#f0b357; --warn-soft:#3a2a12; --chip:#252b2e; --ph:#232a2c; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--display);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px}
+h1{font:800 clamp(28px,4.2vw,44px)/1 var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1 span{background:var(--lime);color:#1a2600;padding:0 .18em;border-radius:4px}
+.sub{color:var(--muted);margin:8px 0 0;max-width:64ch}
+.tally{display:flex;gap:20px;flex-wrap:wrap;font:400 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tally b{display:block;font:800 26px var(--display);color:var(--ink);letter-spacing:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;
+  display:grid;grid-template-columns:2fr minmax(180px,1fr);gap:10px;align-items:end}
+@media (max-width:800px){.bar{grid-template-columns:1fr}}
+.bar label{display:flex;flex-direction:column;gap:4px;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
+.bar input[type=search],.bar select{font:15px var(--display);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+.toggles{display:flex;gap:6px;flex-wrap:wrap}
+.tg{font:600 13px var(--display);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
+.tg[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:focus-visible{outline:2px solid var(--vr);outline-offset:2px}
+.status{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font:12px var(--mono);color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
+.card.ess{border-color:var(--lime);box-shadow:0 0 0 2px var(--lime) inset}
+.ph{aspect-ratio:3/2;max-width:100%;background:var(--ph);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;text-decoration:none;color:var(--muted)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .none{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;text-align:center;font:400 12px var(--mono)}
+.ph .none b{font:800 34px var(--display);color:var(--line)}
+.esstag{position:absolute;left:0;top:10px;background:var(--lime);color:#1a2600;font:700 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:3px 10px 3px 8px;border-radius:0 999px 999px 0}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.grp{font:400 11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.nm{font:700 17px/1.2 var(--display);margin:0;overflow-wrap:anywhere}
+.pub{margin:0;color:var(--muted);font-size:13.5px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:400 11.5px var(--mono);padding:2px 8px;border-radius:4px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.vr{background:var(--vr-soft);color:var(--vr);font-weight:700}
+.tag.u6{background:var(--lime-soft);color:var(--lime-ink);font-weight:700}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.note{margin:0;font-size:13px;color:var(--muted);border-left:2px solid var(--line);padding-left:8px;overflow-wrap:anywhere}
+.link{margin-top:auto;padding-top:4px;font:700 13px var(--display);color:var(--vr);text-decoration:none}
+.link:hover{text-decoration:underline}
+.link.s{color:var(--muted)}
+.link.doc+.link{margin-top:0;padding-top:0}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;max-width:95ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>VRgarden <span> interaction</span></h1>
+    <p class="sub">VR, audio, simulation and runtime tools from the Unity Asset Store: the assets that make a scene interactive. Each card links to the asset’s store page and, where available, its documentation. Essentials are the assets we use most often in the course.</p>
+  </div>
+  <div class="tally" id="tally"></div>
+</header>
+<section class="bar" aria-label="Filters">
+  <label class="q" for="q">Search<input id="q" type="search" placeholder="Name, publisher or note"></label>
+  <label for="fg">Group<select id="fg"></select></label>
+</section>
+
+<div class="status"><span id="count"></span></div>
+<main class="grid" id="grid"></main>
+<footer>Data from your VRgarden asset sheet. Asset Store links and cover images were matched by name and publisher in October 2026. Where no reliable match was found, the card links to a store search instead and shows no image. A few links point to the closest current listing, and the card says so.</footer>
+</div>
+<script>
+const DATA=[{"e": false, "p": "Bearded Ninja Games", "n": "VR Interaction Framework", "v": "3.0.4 (2024)", "g": "VR", "u6": "", "vr": "VR", "note": "locomotion and interaction, not available", "url": "https://assetstore.unity.com/packages/slug/161066", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/34f1d870-8037-4cbd-a3b3-55376525aac0.png?v=1", "doc": "https://wiki.beardedninjagames.com/"}, {"e": false, "p": "Cloudwalkin games", "n": "Hurricane VR - Physics Interaction Toolkit", "v": "2.9.3.c (2026)", "g": "VR", "u6": "", "vr": "VR", "note": "precise interaction", "url": "https://assetstore.unity.com/packages/slug/177300", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/75474321-9747-4a04-afb7-8b27c8705658.jpg?v=1", "doc": "https://cloudwalker2020.github.io/HurricaneVR-Docs/"}, {"e": false, "p": "Cloudwalkin games", "n": "VR Physics Player Controller (Hexabody VR)", "v": "1.44b (2025)", "g": "VR", "u6": "", "vr": "VR", "note": "precise locomotion (jump, run, ...), not available", "url": "https://assetstore.unity.com/packages/slug/185521", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/4cf3824d-1edb-472f-9e67-075be8b1f4d4.png?v=1", "doc": "https://cloudwalker2020.github.io/HurricaneVR-Docs/manual/hexabody/hexabody.html"}, {"e": false, "p": "Earnest Robot", "n": "VR Physics Player Controller (Hexabody VR)", "v": "4.0.4", "g": "VR", "u6": "6", "vr": "VR", "note": "precise hand use (actions and climb)", "url": "https://assetstore.unity.com/packages/slug/165323", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/ef1dad2b-dc92-4275-b9ff-a1a50562cb6b.jpg?v=1", "match": "Linked to Auto Hand – VR Interaction (Earnest Robot), which matches the note; the sheet lists it under the Hexabody name.", "doc": "https://earnest-robot.gitbook.io/auto-hand-docs/"}, {"e": false, "p": "Antipixel", "n": "Home Kit: VRChat SDK Template", "v": "1.0 (2019)", "g": "VR", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/149278", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/bbfc1ee1-537d-476f-96ed-257583033221.png?v=1"}, {"e": false, "p": "Realary", "n": "VR UI", "v": "1.1 (2024)", "g": "VR", "u6": "", "vr": "VR", "note": "UI for VR", "url": "https://assetstore.unity.com/packages/slug/249282", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/2963b3d9-efbf-4e60-9be4-796d93a7c189.jpg?v=1"}, {"e": false, "p": "Switchboards Studio", "n": "Essential VR hands", "v": "1.0 (2022)", "g": "VR", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/227788", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/d916aa3c-3703-433a-9de4-9c624d2dc9b9.png?v=1", "doc": "https://docs.switchboard.studio/"}, {"e": false, "p": "Tom Goethals", "n": "Mirrors and reflections for VR", "v": "2.4.3 (2026)", "g": "VR", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/212493", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/42b4357a-82e7-492e-b424-fa7e81aa98aa.jpg?v=1"}, {"e": false, "p": "Tom Goethals", "n": "Portal for VR", "v": "1.3.1 (2026)", "g": "VR", "u6": "6", "vr": "VR", "note": "Advanced VR Portals (URP)", "url": "https://assetstore.unity.com/packages/slug/228871", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/03c62f20-dd95-49a7-9715-68cb91e61ec1.jpg?v=1"}, {"e": true, "p": "R1 Tools", "n": "OpenXR VR Motion Capture Animation Tool - R1Tools", "v": "0.0.7 (2025)", "g": "VR", "u6": "", "vr": "", "note": "https://tinyurl.com/4pnpdvy7", "url": "https://assetstore.unity.com/packages/slug/214497", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/bff1ca2b-1e3c-47e2-937d-89fa718ba7a0.jpg?v=1", "doc": "https://docs.google.com/document/d/e/2PACX-1vQgq-jeMNXkLHZokAw1qOza8tetwmRDiebnfHgDgWF_wv1Gv6i1VBgMnNXYdR_0WSYCOB7Bjq6P7wnq/pub"}, {"e": false, "p": "Unity Technologies", "n": "VR Beginner: The Escape Room", "v": "1.7 (2026)", "g": "VR", "u6": "", "vr": "", "note": "old, needs updating", "url": "https://assetstore.unity.com/packages/slug/163264", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/d840dbad-c516-410c-8353-434a51179168.jpg?v=1", "doc": "https://learn.unity.com/project/vr-beginner-the-escape-room"}, {"e": true, "p": "Mindport GMBH", "n": "VR builder", "v": "5.10.0 (2026)", "g": "VR", "u6": "6", "vr": "VR", "note": "Interaction tool for VR (core)", "url": "https://assetstore.unity.com/packages/slug/301706", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/eadcc58d-b9b8-41ee-bb14-e35d634f2ea5.jpg?v=1", "match": "Linked to VR Builder Pro (MindPort).", "doc": "https://mindport-gmbh.github.io/VR-Builder-Documentation/index.html"}, {"e": true, "p": "Eduardo Martinelli", "n": "Audio Manager Pro", "v": "1.0 (2026)", "g": "audio", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/345920", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/04d113d4-61fd-48c8-bac3-8ff9fd80d45a.jpg?v=1"}, {"e": true, "p": "FMOD", "n": "FMOD", "v": "2.02.33 (2026)", "g": "audio", "u6": "", "vr": "", "note": "simple audio solution for Unity.", "url": "https://assetstore.unity.com/?q=FMOD", "s": 1, "doc": "https://fmod.com/docs/unity"}, {"e": true, "p": "Hitsu San Design", "n": "Audiobounce", "v": "1.2.5 (2026)", "g": "audio", "u6": "6", "vr": "", "note": "sound management", "url": "https://assetstore.unity.com/packages/slug/265785", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/49d58c75-c9a9-43dc-9513-8b1f97c27494.jpg?v=1"}, {"e": false, "p": "Aglobex", "n": "Urban Traffic System Full Pack", "v": "2.1 (2026)", "g": "simulation", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/166688", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/b0672dce-a3e9-4785-ad5f-5cf6098b9eae.jpg?v=1"}, {"e": true, "p": "Kronnect", "n": "Liquid Volume Pro 2", "v": "11.1.2.1 (2025)", "g": "simulation", "u6": "", "vr": "VR", "note": "works with VR", "url": "https://assetstore.unity.com/packages/slug/249127", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/48e2b739-8609-4bd6-81b8-56264e08fa5d.jpg?v=1", "match": "Linked to Liquid Volume 2 (Kronnect).", "doc": "https://kronnect.com/docs/liquid-volume/"}, {"e": false, "p": "Kronnect", "n": "Voxel Play 4", "v": "52.0 (2026)", "g": "simulation", "u6": "", "vr": "", "note": "Minecraft graphics", "url": "https://assetstore.unity.com/packages/slug/391842", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/ff6b128c-b85f-4134-be31-0932b05e76fd.jpg?v=1", "doc": "https://kronnect.com/docs/voxel-play-4/"}, {"e": false, "p": "Magica Soft", "n": "Magica Cloth 2", "v": "2.18.4 (2026)", "g": "simulation", "u6": "", "vr": "", "note": "installation: https://magicasoft.jp/en/magica-cloth-install-2/", "url": "https://assetstore.unity.com/packages/slug/242307", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/fb7fa843-66fe-4ed3-a0de-0ae0bf0f7241.jpg?v=1", "doc": "https://magicasoft.jp/en/magica-cloth-2-2/"}, {"e": false, "p": "Rowlan", "n": "Tools for Magica Cloth 2", "v": "1.2.0 (2025)", "g": "simulation", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/311633", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/8ba6ec5c-4f63-4d04-b77a-77543621f95b.jpg?v=1"}, {"e": false, "p": "Virtual Method", "n": "Obi Cloth", "v": "7.2 (2026)", "g": "simulation", "u6": "6", "vr": "", "note": "good looking but not great with VR, too slow", "url": "https://assetstore.unity.com/packages/slug/81333", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/48deac03-57f0-4acb-a4ff-709f903862e4.jpg?v=1", "doc": "https://obi.virtualmethodstudio.com/manual/7.1/"}, {"e": false, "p": "Virtual Method", "n": "Obi Fluid", "v": "7.2 (2026)", "g": "simulation", "u6": "", "vr": "-", "note": "good looking but not great with VR, too slow", "url": "https://assetstore.unity.com/packages/slug/63067", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/985439c6-a44d-4ee1-9ad0-e1e2fd30aa5e.jpg?v=1", "doc": "https://obi.virtualmethodstudio.com/manual/7.1/"}, {"e": false, "p": "Virtual Method", "n": "Obi Rope", "v": "7.2 (2026)", "g": "simulation", "u6": "6", "vr": "", "note": "good looking but not great with VR, too slow", "url": "https://assetstore.unity.com/packages/slug/55579", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/98c70d81-3568-43d5-94e3-12f4f0c3e590.jpg?v=1", "doc": "https://obi.virtualmethodstudio.com/manual/7.1/"}, {"e": false, "p": "WSM Game Studio", "n": "Train Controller (Railroad System)", "v": "3.4.7 (2026)", "g": "simulation", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/116455", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/9f4001a3-3482-4bce-aedd-e2eee38d1f36.jpg?v=1"}, {"e": false, "p": "Da Viking Code", "n": "PDollar Point-Cloud Gesture Recognizer", "v": "1.0.3 (2025)", "g": "runtime", "u6": "", "vr": "", "note": "recognises gestures you make with the controlers", "url": "https://assetstore.unity.com/packages/slug/21660", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/82e7b942-4032-4b52-a841-9f20f9de0c8d.jpg?v=1", "doc": "https://github.com/DaVikingCode/PDollar-Unity"}, {"e": false, "p": "Moodkie", "n": "Easy Save", "v": "3.5.27 (2026)", "g": "runtime", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/768", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/d8fb8676-e6cb-492a-863b-b08383ee9bd3.png?v=1", "doc": "https://docs.moodkie.com/easy-save-3"}, {"e": false, "p": "Octamodius", "n": "Runtime Transform Gizmos", "v": "2.0 (2023)", "g": "runtime", "u6": "", "vr": "", "note": "transform objects at runtime (in-game)... ?", "url": "https://assetstore.unity.com/packages/slug/125537", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/0213fdc4-1697-40ff-88a5-db6b80e10605.jpg?v=1", "match": "Linked to Runtime Transform Gizmos (Lite)."}, {"e": false, "p": "Vladimir Sigalkin", "n": "extOSC - Open Sound Control", "v": "1.19.7 (2020)", "g": "runtime", "u6": "", "vr": "", "note": "OSC communication with other applications (weather, ...)", "url": "https://assetstore.unity.com/packages/slug/72005", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/5fa9ee05-2d7e-41de-a7ad-ddfa45ddb413.png?v=1", "doc": "https://github.com/Iam1337/extOSC"}, {"e": true, "p": "Rayfire Studios", "n": "RayFire for Unity", "v": "1.92 (2026)", "g": "simulation", "u6": "", "vr": "", "note": "standard for destruction simulation", "url": "https://assetstore.unity.com/packages/slug/148690", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/d5eb50ca-11b1-40ab-9331-35b8447805ef.jpg?v=1", "match": "Linked to the original RayFire for Unity page (now marked obsolete; RayFire 2 replaces it).", "doc": "http://rayfirestudios.com/category/online-help-unity/"}];
+const $=id=>document.getElementById(id);
+const grpTop=g=>g.split(' (')[0].trim();
+const sub=g=>(g.match(/\(([^)]+)\)/)||[])[1]||'';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const groups=[...new Set(DATA.map(d=>grpTop(d.g)))].sort((a,b)=>a.localeCompare(b));
+$('fg').innerHTML='<option value="">All groups</option>'+groups.map(g=>`<option>${esc(g)}</option>`).join('');
+function fillSub(){const g=$('fg').value;const s=[...new Set(DATA.filter(d=>!g||grpTop(d.g)===g).map(d=>sub(d.g)).filter(Boolean))].sort();
+  $('fs').innerHTML='<option value="">All</option>'+s.map(x=>`<option>${esc(x)}</option>`).join('');$('fs').disabled=!s.length;}
+const n=f=>DATA.filter(f).length;
+$('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span>`;
+const state={e:false,v:false,u:false};
+function card(d){
+  const tags=[];
+  if(d.vr==='VR')tags.push('<span class="tag vr">VR</span>');
+  else if(d.vr==='-')tags.push('<span class="tag warn">No VR</span>');
+  else if(d.vr==='?')tags.push('<span class="tag warn">VR untested</span>');
+  if(d.u6==='6')tags.push('<span class="tag u6">Unity 6</span>');
+  else if(d.u6==='-')tags.push('<span class="tag warn">Not Unity 6</span>');
+  else if(d.u6==='?')tags.push('<span class="tag warn">Unity 6 ?</span>');
+  if(d.fab)tags.push('<span class="tag warn">Unreal · Fab</span>');
+  if(d.v)tags.push(`<span class="tag">${esc(d.v)}</span>`);
+  const media=d.img?`<img src="${esc(d.img)}" alt="${esc(d.n)} cover" loading="lazy" referrerpolicy="no-referrer">`
+    :`<span class="none"><b>${esc(d.n.trim()[0]||'?')}</b>${d.s?(d.fab?'Search on Fab':'Search the Asset Store'):'No image'}</span>`;
+  const notes=[d.note,d.match].filter(Boolean).map(t=>`<p class="note">${esc(t)}</p>`).join('');
+  return `<article class="card${d.e?' ess':''}">
+   <a class="ph" href="${esc(d.url)}" target="_blank" rel="noopener" tabindex="-1">${media}${d.e?'<span class="esstag">Essential</span>':''}</a>
+   <div class="body"><span class="grp">${esc(d.g)}</span><p class="nm">${esc(d.n)}</p><p class="pub">${esc(d.p)}</p>
+   <div class="tags">${tags.join('')}</div>${notes}
+   ${d.doc?`<a class="link doc" href="${esc(d.doc)}" target="_blank" rel="noopener">Documentation ↗</a>`:''}
+   <a class="link${d.s?' s':''}" href="${esc(d.url)}" target="_blank" rel="noopener">${d.fab?(d.s?'Search on Fab ↗':'Open on Fab ↗'):(d.s?'Search on Asset Store ↗':'Open on Asset Store ↗')}</a></div></article>`;
+}
+function render(){
+  const q=$('q').value.trim().toLowerCase(),g=$('fg').value;
+  const list=DATA.filter(d=>(!q||(d.n+' '+d.p+' '+d.note+' '+d.g).toLowerCase().includes(q))&&(!g||grpTop(d.g)===g));
+  list.sort((a,b)=>(b.e-a.e)||a.n.localeCompare(b.n,undefined,{sensitivity:'base',numeric:true}));
+  $('grid').innerHTML=list.length?list.map(card).join(''):'<p class="empty">No assets match these filters.</p>';
+  $('count').textContent=`${list.length} of ${DATA.length} assets shown`;
+  $('grid').querySelectorAll('img').forEach(im=>im.addEventListener('error',()=>{const p=im.parentElement;im.remove();p.insertAdjacentHTML('afterbegin','<span class="none"><b>·</b>Image unavailable</span>')},{once:true}));
+}
+$('q').addEventListener('input',render);
+$('fg').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>

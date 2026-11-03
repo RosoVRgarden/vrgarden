@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VRgarden Finishing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Archivo:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a project shelf — a sticky filter bar over a grid of package cards; essentials pinned first with a lime tab */
+:root{
+  --bg:#eef0ee; --card:#ffffff; --ink:#15181a; --muted:#5f676b; --line:#d8dcda;
+  --lime:#a7d129; --lime-ink:#2f4a00; --lime-soft:#eef7d6;
+  --vr:#3a5bd9; --vr-soft:#e6ebfc; --warn:#b26b00; --warn-soft:#fbefd9; --chip:#eef1ef; --ph:#e3e7e5;
+  --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#121516; --card:#1b2022; --ink:#e8ecea; --muted:#9aa3a6; --line:#2c3336;
+  --lime:#b8e23a; --lime-ink:#d9f58a; --lime-soft:#26300f;
+  --vr:#8ea6ff; --vr-soft:#1f2747; --warn:#f0b357; --warn-soft:#3a2a12; --chip:#252b2e; --ph:#232a2c; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--display);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px}
+h1{font:800 clamp(28px,4.2vw,44px)/1 var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1 span{background:var(--lime);color:#1a2600;padding:0 .18em;border-radius:4px}
+.sub{color:var(--muted);margin:8px 0 0;max-width:64ch}
+.tally{display:flex;gap:20px;flex-wrap:wrap;font:400 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tally b{display:block;font:800 26px var(--display);color:var(--ink);letter-spacing:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;
+  display:grid;grid-template-columns:2fr minmax(180px,1fr);gap:10px;align-items:end}
+@media (max-width:800px){.bar{grid-template-columns:1fr}}
+.bar label{display:flex;flex-direction:column;gap:4px;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
+.bar input[type=search],.bar select{font:15px var(--display);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+.toggles{display:flex;gap:6px;flex-wrap:wrap}
+.tg{font:600 13px var(--display);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
+.tg[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:focus-visible{outline:2px solid var(--vr);outline-offset:2px}
+.status{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font:12px var(--mono);color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
+.card.ess{border-color:var(--lime);box-shadow:0 0 0 2px var(--lime) inset}
+.ph{aspect-ratio:3/2;max-width:100%;background:var(--ph);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;text-decoration:none;color:var(--muted)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .none{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;text-align:center;font:400 12px var(--mono)}
+.ph .none b{font:800 34px var(--display);color:var(--line)}
+.esstag{position:absolute;left:0;top:10px;background:var(--lime);color:#1a2600;font:700 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:3px 10px 3px 8px;border-radius:0 999px 999px 0}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.grp{font:400 11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.nm{font:700 17px/1.2 var(--display);margin:0;overflow-wrap:anywhere}
+.pub{margin:0;color:var(--muted);font-size:13.5px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:400 11.5px var(--mono);padding:2px 8px;border-radius:4px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.vr{background:var(--vr-soft);color:var(--vr);font-weight:700}
+.tag.u6{background:var(--lime-soft);color:var(--lime-ink);font-weight:700}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.note{margin:0;font-size:13px;color:var(--muted);border-left:2px solid var(--line);padding-left:8px;overflow-wrap:anywhere}
+.link{margin-top:auto;padding-top:4px;font:700 13px var(--display);color:var(--vr);text-decoration:none}
+.link:hover{text-decoration:underline}
+.link.s{color:var(--muted)}
+.link.doc+.link{margin-top:0;padding-top:0}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;max-width:95ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>VRgarden <span> finishing</span></h1>
+    <p class="sub">Lighting, shaders and colour, optimisation and presentation tools from the Unity Asset Store: the tools we use to polish, optimise and present a scene. Each card links to the asset’s store page and, where available, its documentation. Essentials are the assets we use most often in the course.</p>
+  </div>
+  <div class="tally" id="tally"></div>
+</header>
+<section class="bar" aria-label="Filters">
+  <label class="q" for="q">Search<input id="q" type="search" placeholder="Name, publisher or note"></label>
+  <label for="fg">Group<select id="fg"></select></label>
+</section>
+
+<div class="status"><span id="count"></span></div>
+<main class="grid" id="grid"></main>
+<footer>Data from your VRgarden asset sheet. Asset Store links and cover images were matched by name and publisher in October 2026. Where no reliable match was found, the card links to a store search instead and shows no image. A few links point to the closest current listing, and the card says so.</footer>
+</div>
+<script>
+const DATA=[{"e": false, "p": "Akidevcat", "n": "Analytical Volumetric Lighting [URP]", "v": "1.2 (2024)", "g": "lighting", "u6": "6", "vr": "", "note": "Forward, Forward+, Deferred but no VR (coming soon...)", "url": "https://assetstore.unity.com/packages/slug/266586", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/5054e9b3-2a37-4a87-ac93-e13926786f7b.jpg?v=1", "doc": "https://docs.superhuman.com/@akidevcat/avl-documentation-v1-0"}, {"e": true, "p": "Eugene B", "n": "Magic Light Probes", "v": "1.96.4 (2025)", "g": "lighting", "u6": "", "vr": "", "note": "smart Light Probes positioning", "url": "https://assetstore.unity.com/packages/slug/157812", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/7388de98-918d-413f-ad84-5400770f6505.png?v=1", "doc": "https://motiongamesstudio.gitbook.io/magic-light-probes"}, {"e": true, "p": "Kronnect", "n": "Radiant Global Illumination", "v": "32.3 (2026)", "g": "lighting", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/225934", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/5a68e399-38a6-4e7a-b1da-61719391e154.jpg?v=1", "doc": "https://kronnect.com/docs/radiant-gi-urp/introduction/"}, {"e": false, "p": "Kronnect", "n": "Volumetric Lights 2", "v": "20.2.2 (2026)", "g": "lighting", "u6": "6", "vr": "-", "note": "VR Single Pass", "url": "https://assetstore.unity.com/packages/slug/234539", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/7aa23051-9e49-4422-a1c2-5c0a43b8df58.png?v=1", "doc": "https://kronnect.com/docs/volumetric-lights-urp/"}, {"e": false, "p": "Artngame", "n": "Ethereal URP 2024 - Volumetric Lighting & Fog", "v": "2.6.6 (2025)", "g": "lighting", "u6": "6", "vr": "", "note": "URP - Unity 6 - atmospheric fog and volumetric lighting", "url": "https://assetstore.unity.com/packages/slug/274279", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/14569e34-4e0f-4d49-b381-027ebdb9659a.jpg?v=1"}, {"e": true, "p": "Mr F", "n": "Bakery - GPU Lightmapper", "v": "1.985 (2026)", "g": "lighting", "u6": "6", "vr": "", "note": "faster than unity renderer on Nvidia GPU", "url": "https://assetstore.unity.com/packages/slug/122218", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/57653746-ef56-4880-9ab3-c03ea8419d1f.png?v=1", "doc": "https://geom.io/bakery/wiki/"}, {"e": true, "p": "Mr F", "n": "Bakery Real-Time Preview", "v": "1.198 (2025)", "g": "lighting", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/164462", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/f58539fd-d5d9-4d35-8f23-06d74927a87e.png?v=1", "doc": "https://geom.io/bakery/wiki/index.php?title=RTPreview"}, {"e": false, "p": "Amplify Creations", "n": "Amplify Color", "v": "1.9.0 (2020)", "g": "shaders & colour", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/1894", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/b1030128-2a75-4602-858a-7db2d2108d75.png?v=1", "doc": "https://wiki.amplify.pt/index.php?title=Unity_Products:Amplify_Color/Manual"}, {"e": false, "p": "Amplify Creations", "n": "Amplify Shader Editor", "v": "1.9.9.14 (2026)", "g": "shaders & colour", "u6": "6", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/68570", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/0c58a98c-e749-4eff-b3be-0fb6c62d9f7b.png?v=1", "doc": "https://wiki.amplify.pt/index.php?title=Unity_Products:Amplify_Shader_Editor/Manual"}, {"e": true, "p": "Ciconia Studio", "n": "Glass Shader (URP)", "v": "2026.0.1 (2026)", "g": "shaders & colour", "u6": "6", "vr": "", "note": "URP - up to version 2022", "url": "https://assetstore.unity.com/packages/slug/38603", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/0524efb0-89c4-4d4a-849e-8861bf589c1b.jpg?v=1"}, {"e": false, "p": "PH Graphics", "n": "ShaderGraph Essentials", "v": "1.1.17 (2025)", "g": "shaders & colour", "u6": "-", "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/141671", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/39dd9b4e-a6b9-4d4d-b421-68e5db5df91e.png?v=1"}, {"e": false, "p": "Amplify Creations", "n": "Amplify LUT Pack", "v": "1.2.0 (2024)", "g": "shaders & colour", "u6": "6", "vr": "", "note": "compatible with Post Processing (Global Volume)", "url": "https://assetstore.unity.com/packages/slug/50070", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/59972ed1-c9ab-41be-93e0-5829f8f1a909.png?v=1", "doc": "https://wiki.amplify.pt/index.php?title=Unity_Products:Amplify_LUT_Pack/Manual"}, {"e": false, "p": "Amplify Creations", "n": "FXAA Fast Approximate Anti-Aliasing", "v": "1.5 (2024)", "g": "shaders & colour", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/3590", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/cf499224-ed2d-4551-b3e9-1918e826511f.png?v=1"}, {"e": false, "p": "FORGE3D", "n": "Sci-Fi Effects", "v": "2.3 (2024)", "g": "shaders & colour", "u6": "", "vr": "", "note": "standard, LWRP, URP", "url": "https://assetstore.unity.com/packages/slug/20416", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/18cf5d59-1b8d-44c0-90c9-fc8b08a95052.png?v=1", "doc": "https://docs.forge3d.com/sci-fi-effects"}, {"e": false, "p": "Amplify Creations", "n": "Impostors", "v": "1.1.0 (2026)", "g": "optimisation", "u6": "", "vr": "", "note": "360 billboards, VR devices are not officially supported.", "url": "https://assetstore.unity.com/packages/slug/119877", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/e1b0c98f-45a1-4d12-be34-cceafa8e8427.png?v=1", "doc": "https://wiki.amplify.pt/index.php?title=Unity_Products:Amplify_Impostors/Manual"}, {"e": false, "p": "Ian Deane", "n": "Mesh Baker", "v": "3.40.2 (2026)", "g": "optimisation", "u6": "", "vr": "", "note": "mesh optimisation", "url": "https://assetstore.unity.com/packages/slug/5017", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/e9f2c6e1-f5af-46cc-b453-259b18420385.jpg?v=1", "doc": "https://digitalopus.ca/site/mesh-baker-3-manual/"}, {"e": false, "p": "Mel Georgiou / Hte", "n": "MeshKit - Mesh Editing Tools", "v": "8.2 (2026)", "g": "optimisation", "u6": "6", "vr": "", "note": "very good tool for mesh optimisation", "url": "https://assetstore.unity.com/packages/slug/39794", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/4291f4eb-1aa2-4140-9d7d-98a2e26649f5.jpg?v=1"}, {"e": true, "p": "Mesh Online", "n": "Mantis LOD Editor - Pro Edition", "v": "8.3 (2026)", "g": "optimisation", "u6": "6", "vr": "", "note": "creates multiple LOD (level of detail)", "url": "https://assetstore.unity.com/packages/slug/37086", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/016eb7ff-a672-4c55-942d-8ade923e9294.png?v=1"}, {"e": false, "p": "Naturemanufacture", "n": "World Streamer 2", "v": "1.9.1 (2026)", "g": "optimisation", "u6": "6", "vr": "", "note": "large worlds", "url": "https://assetstore.unity.com/packages/slug/176482", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/440c1ae6-9261-4613-a520-7b0026f87553.jpg?v=1", "doc": "https://www.dropbox.com/scl/fi/fb9zpakiv5ltz7xgq84di/World-Streamer-Manual-2.pdf?rlkey=tm3ewz5jh66qtkt2qola1dj39&dl=0"}, {"e": true, "p": "New Game Studio", "n": "Advanced Culling System 2", "v": "1.5.8 (2026)", "g": "optimisation", "u6": "6", "vr": "VR", "note": "cull meshes, LODGroups, lights, and custom objects", "url": "https://assetstore.unity.com/packages/slug/272830", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/5b556a5c-6aa5-4897-a03c-d0c797eb765f.jpg?v=1"}, {"e": true, "p": "New Game Studio", "n": "MeshFusion & Advanced Culling Integration", "v": "1.0.2 (2026)", "g": "optimisation", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/346852", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/98f8196e-f605-42c3-bb22-1279d4f7e8cd.jpg?v=1"}, {"e": true, "p": "New Game Studio", "n": "MeshFusion Pro : Ultimate Optimization Tool", "v": "1.3.5 (2026)", "g": "optimisation", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/255560", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/7874a37d-c7de-4b6f-a0d7-4a1832fa6937.jpg?v=1"}, {"e": false, "p": "New Game Studio", "n": "Super Level Optimizer 2", "v": "1.0.8 (2025)", "g": "optimisation", "u6": "6", "vr": "VR", "note": "mesh combiners, easy to use but not striking impact", "url": "https://assetstore.unity.com/packages/slug/319098", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/10858738-fdeb-4c4a-a136-026c15e4b70d.jpg?v=1"}, {"e": false, "p": "Starasgames", "n": "Impostors", "v": "2.1.0 (2025)", "g": "optimisation", "u6": "", "vr": "", "note": "360 billboards. Min: 2020.3.16. Simple VR with teleportation movement or steady gameplay.", "url": "https://assetstore.unity.com/packages/slug/188562", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/a25437c3-7f17-46bf-96a0-f5f5932f3352.jpg?v=1"}, {"e": false, "p": "Martin Nerurkar", "n": "Screen Fade", "v": "1.3.1 (2021)", "g": "presentation", "u6": "", "vr": "VR", "note": "(VR support)", "url": "https://assetstore.unity.com/packages/slug/105102", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/e782ebe6-2200-4313-a3b5-a40ea1242e10.jpg?v=1"}, {"e": false, "p": "Rivermill Studios", "n": "Deckard Render", "v": "7.00 (2026)", "g": "presentation", "u6": "-", "vr": "", "note": "recording tool", "url": "https://assetstore.unity.com/packages/slug/302046", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/96c946de-1fcd-480a-9524-318a93afd9a9.jpg?v=1", "match": "Linked to Deckard Render SX, the current edition."}, {"e": false, "p": "Rowlan", "n": "Photo Session", "v": "2.6.0 (2026)", "g": "presentation", "u6": "6", "vr": "", "note": "photo tool", "url": "https://assetstore.unity.com/packages/slug/227393", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/cd754f27-058a-4171-85fb-d5accd96d622.jpg?v=1"}, {"e": false, "p": "Michsky", "n": "Loading Screen Studio", "v": "2.0.8f (2025)", "g": "presentation", "u6": null, "vr": null, "note": null, "url": "https://assetstore.unity.com/packages/slug/250428", "img": "https://assetstorev1-prd-cdn.unity3d.com/key-image/8da86772-0c5a-41b8-9cf4-f96769fce63a.jpg?v=1", "doc": "https://docs.michsky.com/docs/lss"}];
+const $=id=>document.getElementById(id);
+const grpTop=g=>g.split(' (')[0].trim();
+const sub=g=>(g.match(/\(([^)]+)\)/)||[])[1]||'';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const groups=[...new Set(DATA.map(d=>grpTop(d.g)))].sort((a,b)=>a.localeCompare(b));
+$('fg').innerHTML='<option value="">All groups</option>'+groups.map(g=>`<option>${esc(g)}</option>`).join('');
+function fillSub(){const g=$('fg').value;const s=[...new Set(DATA.filter(d=>!g||grpTop(d.g)===g).map(d=>sub(d.g)).filter(Boolean))].sort();
+  $('fs').innerHTML='<option value="">All</option>'+s.map(x=>`<option>${esc(x)}</option>`).join('');$('fs').disabled=!s.length;}
+const n=f=>DATA.filter(f).length;
+$('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span>`;
+const state={e:false,v:false,u:false};
+function card(d){
+  const tags=[];
+  if(d.vr==='VR')tags.push('<span class="tag vr">VR</span>');
+  else if(d.vr==='-')tags.push('<span class="tag warn">No VR</span>');
+  else if(d.vr==='?')tags.push('<span class="tag warn">VR untested</span>');
+  if(d.u6==='6')tags.push('<span class="tag u6">Unity 6</span>');
+  else if(d.u6==='-')tags.push('<span class="tag warn">Not Unity 6</span>');
+  else if(d.u6==='?')tags.push('<span class="tag warn">Unity 6 ?</span>');
+  if(d.fab)tags.push('<span class="tag warn">Unreal · Fab</span>');
+  if(d.v)tags.push(`<span class="tag">${esc(d.v)}</span>`);
+  const media=d.img?`<img src="${esc(d.img)}" alt="${esc(d.n)} cover" loading="lazy" referrerpolicy="no-referrer">`
+    :`<span class="none"><b>${esc(d.n.trim()[0]||'?')}</b>${d.s?(d.fab?'Search on Fab':'Search the Asset Store'):'No image'}</span>`;
+  const notes=[d.note,d.match].filter(Boolean).map(t=>`<p class="note">${esc(t)}</p>`).join('');
+  return `<article class="card${d.e?' ess':''}">
+   <a class="ph" href="${esc(d.url)}" target="_blank" rel="noopener" tabindex="-1">${media}${d.e?'<span class="esstag">Essential</span>':''}</a>
+   <div class="body"><span class="grp">${esc(d.g)}</span><p class="nm">${esc(d.n)}</p><p class="pub">${esc(d.p)}</p>
+   <div class="tags">${tags.join('')}</div>${notes}
+   ${d.doc?`<a class="link doc" href="${esc(d.doc)}" target="_blank" rel="noopener">Documentation ↗</a>`:''}
+   <a class="link${d.s?' s':''}" href="${esc(d.url)}" target="_blank" rel="noopener">${d.fab?(d.s?'Search on Fab ↗':'Open on Fab ↗'):(d.s?'Search on Asset Store ↗':'Open on Asset Store ↗')}</a></div></article>`;
+}
+function render(){
+  const q=$('q').value.trim().toLowerCase(),g=$('fg').value;
+  const list=DATA.filter(d=>(!q||(d.n+' '+d.p+' '+d.note+' '+d.g).toLowerCase().includes(q))&&(!g||grpTop(d.g)===g));
+  list.sort((a,b)=>(b.e-a.e)||a.n.localeCompare(b.n,undefined,{sensitivity:'base',numeric:true}));
+  $('grid').innerHTML=list.length?list.map(card).join(''):'<p class="empty">No assets match these filters.</p>';
+  $('count').textContent=`${list.length} of ${DATA.length} assets shown`;
+  $('grid').querySelectorAll('img').forEach(im=>im.addEventListener('error',()=>{const p=im.parentElement;im.remove();p.insertAdjacentHTML('afterbegin','<span class="none"><b>·</b>Image unavailable</span>')},{once:true}));
+}
+$('q').addEventListener('input',render);
+$('fg').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>
