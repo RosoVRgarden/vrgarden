@@ -103,12 +103,12 @@ $('tally').innerHTML=`<span><b>${DATA.length}</b>assets</span>`;
 const state={e:false,v:false,u:false};
 function card(d){
   const tags=[];
-  if(d.vr==='VR')tags.push('<span class="tag vr">VR</span>');
-  else if(d.vr==='-')tags.push('<span class="tag warn">No VR</span>');
-  else if(d.vr==='?')tags.push('<span class="tag warn">VR untested</span>');
   if(d.u6==='6')tags.push('<span class="tag u6">Unity 6</span>');
   else if(d.u6==='-')tags.push('<span class="tag warn">Not Unity 6</span>');
   else if(d.u6==='?')tags.push('<span class="tag warn">Unity 6 ?</span>');
+  if(d.vr==='VR')tags.push('<span class="tag vr">VR</span>');
+  else if(d.vr==='-')tags.push('<span class="tag warn">No VR</span>');
+  else if(d.vr==='?')tags.push('<span class="tag warn">VR untested</span>');
   if(d.fab)tags.push('<span class="tag warn">Unreal · Fab</span>');
   if(d.v)tags.push(`<span class="tag">${esc(d.v)}</span>`);
   const media=d.img?`<img src="${esc(d.img)}" alt="${esc(d.n)} cover" loading="lazy" referrerpolicy="no-referrer">`
