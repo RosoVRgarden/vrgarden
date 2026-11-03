@@ -90,6 +90,7 @@ function row(d){
 function render(){
   const c=$('fc').value,l=$('fl').value;
   const L=DATA.filter(d=>(!c||d.cat===c)&&(!l||d.lib===l));
+  L.sort((a,b)=>a.title.localeCompare(b.title,undefined,{sensitivity:'base',numeric:true}));
   $('out').innerHTML=L.length?`<div class="list">${L.map(row).join('')}</div>`:'<p class="status">No sounds match.</p>';
   $('count').textContent=`${L.length} of ${DATA.length} sounds shown`;
 }
