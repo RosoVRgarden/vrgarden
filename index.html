@@ -13,7 +13,7 @@
 :root[data-theme="dark"]{--bg:#121413;--ink:#ecefe8;--muted:#9ba19a;--card:#1b1e1c;--line:#2c312d;--lime:#b6e03a;--lime-ink:#1a2200;--green:#8fcf96;--green-soft:#1f2b21}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Archivo,system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
-.wrap{max-width:980px;width:100%;margin:0 auto;padding:56px 16px 40px;flex:1}
+.wrap{max-width:980px;width:100%;margin:0 auto;padding:24px 16px 40px;flex:1}
 .kicker{font-family:"Space Mono",monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
 h1{font-size:clamp(34px,6vw,56px);line-height:1.02;font-weight:800;margin:0 0 14px;letter-spacing:-.02em}
 h1 span{background:var(--lime);color:var(--lime-ink);padding:0 .15em;font-size:.55em;letter-spacing:0;white-space:nowrap;display:table;margin-top:.35em}
@@ -44,11 +44,14 @@ a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:var(--
 .body p{margin:0;color:var(--muted);line-height:1.5;font-size:15px}
 .go{margin-top:auto;padding-top:12px;font-family:"Space Mono",monospace;font-size:14px;font-weight:700}
 .trees-card .go{color:var(--green)}
-.search{margin:0 0 32px;position:relative}
+.search{margin:0 0 14px;position:relative}
+@media (min-width:912px){.search{width:calc((100% - 40px)*2/3 + 20px)}}
 .search input{width:100%;font:16px Archivo,system-ui,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px 44px;outline:none;-webkit-appearance:none;appearance:none}
 .search input:focus{border-color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--lime) 55%,transparent)}
 .search svg{position:absolute;left:15px;top:15px;pointer-events:none;color:var(--muted)}
-.ginfo{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);margin:10px 2px 0;min-height:1em}
+.ginfo{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);margin:10px 2px 0}
+.ginfo:empty{display:none}
+.kicker:empty{display:none}
 .gres{list-style:none;margin:10px 0 0;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
 .gres:empty{display:none}
 .gres li+li{border-top:1px solid var(--line)}
@@ -250,7 +253,7 @@ footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}
     </a>
   </div>
 </div>
-<footer>Copyright Feng-Chia University &amp; VRgarden Architecture Studio (October 2026)<br>Asset names, images and trademarks belong to their respective creators and publishers.<br>Version 13.1 · 5th November 2026 · <a href="VRgarden_Version_Log.html">Version log</a></footer>
+<footer>Copyright Feng-Chia University &amp; VRgarden Architecture Studio (October 2026)<br>Asset names, images and trademarks belong to their respective creators and publishers.<br>Version 13.2 · 5th November 2026 · <a href="VRgarden_Version_Log.html">Version log</a></footer>
 <script>
 (()=>{
 const $=id=>document.getElementById(id);
