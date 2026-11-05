@@ -28,6 +28,7 @@ a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:var(--
 .band.models{background:linear-gradient(160deg,#2d3436,#6b7a80 55%,#d9dbd2)}
 .band.reallusion{background:linear-gradient(160deg,#3a2e5c,#7a5fb0 55%,#e2d7f5)}
 .band.animation{background:linear-gradient(160deg,#5c2a1e,#c2552f 55%,#f5c9a8)}
+.band.clips{background:linear-gradient(160deg,#3b1e14,#8f3d22 55%,#e7b48f)}
 .band.world{background:linear-gradient(160deg,#4a3b1f,#8a6d35 55%,#e6d6a8)}
 .band.stamping{background:linear-gradient(160deg,#3d3a35,#8c7b62 55%,#e8dcc4)}
 .band.gallery{background:linear-gradient(160deg,#16181a,#4a4f52 55%,#c9ccc4)}
@@ -196,6 +197,17 @@ footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}
         <span class="go">Open catalogue →</span>
       </div>
     </a>
+    <a class="card" href="VRgarden_Animation_Clips.html">
+      <div class="band clips">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="6" y="12" width="52" height="40" rx="4" stroke="#ffffff" stroke-width="3"/><path d="M6 22h52M6 42h52M16 12v10M28 12v10M40 12v10M52 12v10M16 42v10M28 42v10M40 42v10M52 42v10" stroke="#ffffff" stroke-width="3"/><path d="M28 27v10l8-5z" fill="#ffffff"/></svg>
+        <span class="tag">Animation · Clips</span>
+      </div>
+      <div class="body">
+        <h2>Animation clips</h2>
+        <p>Searchable list of the clips inside the motion-capture and survival packs: idles, sitting, conversation, greetings, eating, bonfire, crafting, fishing, doors and ladders.</p>
+        <span class="go">Open catalogue →</span>
+      </div>
+    </a>
     <a class="card" href="VRgarden_Sounds.html">
       <div class="band sound">
         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M8 32h6M18 22v20M26 14v36M34 24v16M42 10v44M50 20v24M58 32h-2" stroke="#16181a" stroke-width="4" stroke-linecap="round"/></svg>
@@ -253,7 +265,7 @@ footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}
     </a>
   </div>
 </div>
-<footer>Copyright Feng-Chia University &amp; VRgarden Architecture Studio (October 2026)<br>Asset names, images and trademarks belong to their respective creators and publishers.<br>Version 13.3 · 5th November 2026 · <a href="VRgarden_Version_Log.html">Version log</a></footer>
+<footer>Copyright Feng-Chia University &amp; VRgarden Architecture Studio (October 2026)<br>Asset names, images and trademarks belong to their respective creators and publishers.<br>Version 14.0 · 5th November 2026 · <a href="VRgarden_Version_Log.html">Version log</a></footer>
 <script>
 (()=>{
 const $=id=>document.getElementById(id);
@@ -271,6 +283,7 @@ function readData(h){
   try{return JSON.parse(h.slice(i+11,k+1))}catch(e){return[]}
 }
 function key(d){
+  if(d.clip)return 'clip:'+d.p+':'+d.clip;
   const u=d.url||'';
   if(!d.s){const m=u.match(/assetstore\.unity\.com\/.*?(\d{2,})\/?(?:[?#].*)?$/)||u.match(/fab\.com\/listings\/([0-9a-f-]{36})/);if(m)return m[1];if(u)return u.replace(/[?#].*$/,'').toLowerCase()}
   return 'n:'+(d.n||'').toLowerCase().trim();
@@ -287,7 +300,7 @@ function load(){
         const k=key(d);let o=by.get(k);
         if(!o){o={n:d.n,m:[d.p,d.g].filter(Boolean).join(' · '),e:false,pages:[],txt:''};by.set(k,o)}
         if(!o.pages.some(x=>x.p===p))o.pages.push({p,n:d.n});
-        o.e=o.e||!!d.e;o.txt+=' '+[d.n,d.p,d.g,d.note,d.match].join(' ');
+        o.e=o.e||!!d.e;o.txt+=' '+[d.n,d.p,d.g,d.note,d.match,d.clip].join(' ');
       }
       IDX=[...by.values()];IDX.forEach(o=>{o.k=o.txt.toLowerCase();o.nl=o.pages.map(x=>x.n).join(' | ').toLowerCase()});
       return IDX;
