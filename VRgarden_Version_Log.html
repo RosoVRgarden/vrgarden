@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VRgarden Version log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f4ef;--ink:#16181a;--muted:#5d6166;--card:#ffffff;--line:#d9dbd2;--lime:#b6e03a;--lime-ink:#2f3d00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121413;--ink:#ecefe8;--muted:#9ba19a;--card:#1b1e1c;--line:#2c312d;--lime:#b6e03a;--lime-ink:#1a2200}}
+:root[data-theme="dark"]{--bg:#121413;--ink:#ecefe8;--muted:#9ba19a;--card:#1b1e1c;--line:#2c312d;--lime:#b6e03a;--lime-ink:#1a2200}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Archivo,system-ui,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:56px 16px 40px}
+a{color:inherit}
+.back{font-family:"Space Mono",monospace;font-size:13px;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--ink)}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.02;font-weight:800;margin:14px 0 14px;letter-spacing:-.02em}
+h1 span{background:var(--lime);color:var(--lime-ink);padding:0 .15em;font-size:.55em;letter-spacing:0;white-space:nowrap;display:table;margin-top:.35em}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0 0 28px;line-height:1.5}
+.now{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 28px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:130px}
+.stat b{display:block;font-size:30px;font-weight:800;letter-spacing:-.01em}
+.stat span{font-family:"Space Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.stat.cur{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
+.stat.cur span{color:var(--lime-ink);opacity:.8}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0 0 40px}
+.rule{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.rule h2{margin:0 0 6px;font-size:17px}
+.rule p{margin:0;color:var(--muted);line-height:1.5;font-size:15px}
+.rel{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:0 0 14px;overflow:hidden}
+.mj{display:flex;gap:16px;align-items:flex-start;padding:16px 18px}
+.mj p{margin:4px 0 0;line-height:1.45}
+.kind{font-family:"Space Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.vn{font-family:"Space Mono",monospace;font-weight:700;font-size:13px;white-space:nowrap}
+.vn.big{flex:none;background:var(--lime);color:var(--lime-ink);font-size:16px;padding:4px 10px;border-radius:8px;min-width:58px;text-align:center}
+.mins{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.mins li{display:grid;grid-template-columns:58px 92px 1fr;gap:6px 14px;padding:9px 18px;font-size:14.5px;line-height:1.45}
+.mins li+li{border-top:1px solid var(--line)}
+.mins .vn{text-align:center}
+.mins .dt{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);padding-top:2px}
+@media (max-width:560px){.mins li{grid-template-columns:52px 1fr}.mins .dt{grid-column:2}.mins .tx{grid-column:2}.mins .vn{grid-row:1/span 2}}
+footer{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);text-align:center;padding:24px 16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← VRgarden libraries</a>
+  <h1>VRgarden <span>version log</span></h1>
+  <p class="lead">Every change published to the VRgarden libraries since the first upload on 22 October 2026, numbered as major and minor versions.</p>
+  <section class="rel">
+  <div class="mj"><span class="vn big">13.0</span><div><span class="kind">Major · 5 Nov 2026</span><p>Small models library added (2,314 models from Poly Haven and Quixel).</p></div></div>
+  <ol class="mins"><li><span class="vn">13.1</span><span class="dt">5 Nov 2026</span><span class="tx">Version log page added; current version shown in the index footer.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">12.0</span><div><span class="kind">Major · 5 Nov 2026</span><p>Search across all libraries on the index; library pages open filtered from a search. Models: 10 Post-Apocalyptic Survival Kit packs added.</p></div></div>
+  <ol class="mins"><li><span class="vn">12.2</span><span class="dt">5 Nov 2026</span><span class="tx">Models: 2 packs regrouped, essential counter removed, search from the index fixed.</span></li><li><span class="vn">12.1</span><span class="dt">5 Nov 2026</span><span class="tx">Index: search clears when coming back with the Back button.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">11.0</span><div><span class="kind">Major · 3 Nov 2026</span><p>Misc assets library added (24 assets from Workflow, Interaction and Nature).</p></div></div>
+  <ol class="mins"><li><span class="vn">11.21</span><span class="dt">3 Nov 2026</span><span class="tx">Home Kit and RayFire moved to Misc; VR Interaction Framework removed.</span></li><li><span class="vn">11.20</span><span class="dt">3 Nov 2026</span><span class="tx">Nature: Unity 6, essential and note updates; Fog Volume 3 moved to Misc; Workflow: 3 Unity 6 labels.</span></li><li><span class="vn">11.19</span><span class="dt">3 Nov 2026</span><span class="tx">VRgarden wiki links added to 20 cards.</span></li><li><span class="vn">11.18</span><span class="dt">3 Nov 2026</span><span class="tx">Same label order on all pages (Unity 6, MicroVerse, VR, version); World Building: MicroVerse labels and Biomes note.</span></li><li><span class="vn">11.17</span><span class="dt">3 Nov 2026</span><span class="tx">Workflow: EasyRoads3D Pro and Asset Cleaner no longer essential; Orion moved to Misc.</span></li><li><span class="vn">11.16</span><span class="dt">3 Nov 2026</span><span class="tx">Finishing: ShaderGraph Essentials Unity 6.</span></li><li><span class="vn">11.15</span><span class="dt">3 Nov 2026</span><span class="tx">Index: intro text.</span></li><li><span class="vn">11.14</span><span class="dt">3 Nov 2026</span><span class="tx">Animation: 4 new essentials, Swarm Of Bats note, essential counter removed.</span></li><li><span class="vn">11.13</span><span class="dt">3 Nov 2026</span><span class="tx">Interaction: VR labels removed, FMOD store link, RayFire not essential, Voxel Play 4 Unity 6, Escape Room removed.</span></li><li><span class="vn">11.12</span><span class="dt">3 Nov 2026</span><span class="tx">Workflow: Unity 6 labels, VR label removed; Task Atlas and Ultimate Editor Enhancer moved to Misc.</span></li><li><span class="vn">11.11</span><span class="dt">3 Nov 2026</span><span class="tx">Index: shorter card bands, label aligned with the icon.</span></li><li><span class="vn">11.10</span><span class="dt">3 Nov 2026</span><span class="tx">Finishing: both Impostors Unity 6; Starasgames Impostors essential.</span></li><li><span class="vn">11.9</span><span class="dt">3 Nov 2026</span><span class="tx">Index: smaller subtitle on its own line.</span></li><li><span class="vn">11.8</span><span class="dt">3 Nov 2026</span><span class="tx">Index: card tags.</span></li><li><span class="vn">11.7</span><span class="dt">3 Nov 2026</span><span class="tx">World Building: Road Textures for MicroVerse Roads (Rowlan).</span></li><li><span class="vn">11.6</span><span class="dt">3 Nov 2026</span><span class="tx">User Interface: DreamOS replaced by DreamOS - Modern OS UI.</span></li><li><span class="vn">11.5</span><span class="dt">3 Nov 2026</span><span class="tx">World Building: all MicroVerse tools essential; Genesis and Biomes last.</span></li><li><span class="vn">11.4</span><span class="dt">3 Nov 2026</span><span class="tx">New copyright footer on all pages; World Building synced with Nature.</span></li><li><span class="vn">11.3</span><span class="dt">3 Nov 2026</span><span class="tx">Index: title “architecture studio.fcu”.</span></li><li><span class="vn">11.2</span><span class="dt">3 Nov 2026</span><span class="tx">TileWorldCreator and vFolders moved to Misc; Grabbit 2 updated.</span></li><li><span class="vn">11.1</span><span class="dt">3 Nov 2026</span><span class="tx">Workflow: Unreal exporter link and versions; User Interface: Figma Converter added.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">10.0</span><div><span class="kind">Major · 3 Nov 2026</span><p>Unity assets split into four libraries: Unity workflows (50), Interaction (29), Finishing (28) and User Interface (5).</p></div></div>
+  <ol class="mins"><li><span class="vn">10.2</span><span class="dt">3 Nov 2026</span><span class="tx">Index: title “VRgarden Architecture Studio”.</span></li><li><span class="vn">10.1</span><span class="dt">3 Nov 2026</span><span class="tx">Index: “UI” renamed “User Interface”.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">9.0</span><div><span class="kind">Major · 3 Nov 2026</span><p>Gallery added (ArchVizPRO and Survivor Base images).</p></div></div>
+  
+</section><section class="rel">
+  <div class="mj"><span class="vn big">8.0</span><div><span class="kind">Major · 3 Nov 2026</span><p>Stamping library added (51 StampIT! packs); 3 assets added to World Building.</p></div></div>
+  <ol class="mins"><li><span class="vn">8.5</span><span class="dt">3 Nov 2026</span><span class="tx">Nature: essentials revised.</span></li><li><span class="vn">8.4</span><span class="dt">3 Nov 2026</span><span class="tx">Index: intro rewritten.</span></li><li><span class="vn">8.3</span><span class="dt">3 Nov 2026</span><span class="tx">Nature: notes updated (Better Lit Shader, MicroSplat for Unity 6.3).</span></li><li><span class="vn">8.2</span><span class="dt">3 Nov 2026</span><span class="tx">Characters: 5 essentials; Stamping and World Building: essential counter removed.</span></li><li><span class="vn">8.1</span><span class="dt">3 Nov 2026</span><span class="tx">Index: intro text.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">7.0</span><div><span class="kind">Major · 1 Nov 2026</span><p>World Building library added (30 assets: MicroVerse tools and compatible packs); Nature subgroups merged into groups.</p></div></div>
+  <ol class="mins"><li><span class="vn">7.14</span><span class="dt">3 Nov 2026</span><span class="tx">Models: 37 Fab models added, new groups, ArchVizPRO essential. Essentials first, then A–Z, on Models, Nature, Unity assets, Animation and Sounds.</span></li><li><span class="vn">7.13</span><span class="dt">2 Nov 2026</span><span class="tx">Nature: Advanced Terrain Grass publisher corrected.</span></li><li><span class="vn">7.12</span><span class="dt">2 Nov 2026</span><span class="tx">Nature: 3 assets added, 4 removed.</span></li><li><span class="vn">7.11</span><span class="dt">2 Nov 2026</span><span class="tx">Nature: 72 versions checked and updated; 3 assets added, 6 removed.</span></li><li><span class="vn">7.10</span><span class="dt">2 Nov 2026</span><span class="tx">9 animals moved from Nature to Animation.</span></li><li><span class="vn">7.9</span><span class="dt">2 Nov 2026</span><span class="tx">Unity assets: essential and Unity 6 labels corrected.</span></li><li><span class="vn">7.8</span><span class="dt">1 Nov 2026</span><span class="tx">Unity assets: 80 versions checked and updated.</span></li><li><span class="vn">7.7</span><span class="dt">1 Nov 2026</span><span class="tx">Models: Essential, VR and Unity 6 buttons removed.</span></li><li><span class="vn">7.6</span><span class="dt">1 Nov 2026</span><span class="tx">3 fog assets moved from Unity assets to Nature.</span></li><li><span class="vn">7.5</span><span class="dt">1 Nov 2026</span><span class="tx">EasyRoads3D Pro moved from Models to Unity assets.</span></li><li><span class="vn">7.4</span><span class="dt">1 Nov 2026</span><span class="tx">Models: creator website links on 9 archviz assets.</span></li><li><span class="vn">7.3</span><span class="dt">1 Nov 2026</span><span class="tx">Models: groups and subgroups merged; 34 store links replaced.</span></li><li><span class="vn">7.2</span><span class="dt">1 Nov 2026</span><span class="tx">Index: World Building moved to second position.</span></li><li><span class="vn">7.1</span><span class="dt">1 Nov 2026</span><span class="tx">Index: World Building card text.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">6.0</span><div><span class="kind">Major · 1 Nov 2026</span><p>Animation library added (38 assets moved from Unity assets).</p></div></div>
+  <ol class="mins"><li><span class="vn">6.2</span><span class="dt">1 Nov 2026</span><span class="tx">Animation: subgroups merged into groups; Essential, VR and Unity 6 buttons removed.</span></li><li><span class="vn">6.1</span><span class="dt">1 Nov 2026</span><span class="tx">Animation: 1 asset added; Nature: 2 animal assets added.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">5.0</span><div><span class="kind">Major · 31 Oct 2026</span><p>Characters library added (43 Reallusion assets).</p></div></div>
+  <ol class="mins"><li><span class="vn">5.4</span><span class="dt">1 Nov 2026</span><span class="tx">Index: card descriptions refined.</span></li><li><span class="vn">5.3</span><span class="dt">1 Nov 2026</span><span class="tx">Index: section titles shortened (Unity, Nature, Models, Characters).</span></li><li><span class="vn">5.2</span><span class="dt">31 Oct 2026</span><span class="tx">Index: copyright footer.</span></li><li><span class="vn">5.1</span><span class="dt">31 Oct 2026</span><span class="tx">Index: card title wording.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">4.0</span><div><span class="kind">Major · 31 Oct 2026</span><p>Unity assets split: new Nature (96 assets) and Models (193 assets) libraries.</p></div></div>
+  <ol class="mins"><li><span class="vn">4.3</span><span class="dt">31 Oct 2026</span><span class="tx">Nature: Essential, VR and Unity 6 buttons removed from the search bar.</span></li><li><span class="vn">4.2</span><span class="dt">31 Oct 2026</span><span class="tx">Index: trees and plants moved last; Nature and Models renamed.</span></li><li><span class="vn">4.1</span><span class="dt">31 Oct 2026</span><span class="tx">9 water assets moved from Unity assets to Nature.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">3.0</span><div><span class="kind">Major · 29 Oct 2026</span><p>Sounds library added (166 Sounddogs sounds).</p></div></div>
+  <ol class="mins"><li><span class="vn">3.6</span><span class="dt">30 Oct 2026</span><span class="tx">Index: title and headings updated.</span></li><li><span class="vn">3.5</span><span class="dt">30 Oct 2026</span><span class="tx">Index: page title removed.</span></li><li><span class="vn">3.4</span><span class="dt">30 Oct 2026</span><span class="tx">Index: buttons renamed “Open catalogue”.</span></li><li><span class="vn">3.3</span><span class="dt">30 Oct 2026</span><span class="tx">Index: footer dated October 2026.</span></li><li><span class="vn">3.2</span><span class="dt">29 Oct 2026</span><span class="tx">Sounds: library filter added.</span></li><li><span class="vn">3.1</span><span class="dt">29 Oct 2026</span><span class="tx">Sounds: categories added, filters simplified.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">2.0</span><div><span class="kind">Major · 22 Oct 2026</span><p>The home page becomes the library index, with two libraries: Unity assets (450 assets) and Trees and plants in Taiwan (312 entries).</p></div></div>
+  <ol class="mins"><li><span class="vn">2.11</span><span class="dt">25 Oct 2026</span><span class="tx">Unity assets: title wording.</span></li><li><span class="vn">2.10</span><span class="dt">23 Oct 2026</span><span class="tx">Index: new header layout.</span></li><li><span class="vn">2.9</span><span class="dt">23 Oct 2026</span><span class="tx">Unity assets page retitled “VRgarden Assets”.</span></li><li><span class="vn">2.8</span><span class="dt">23 Oct 2026</span><span class="tx">Taiwan page: Da’an Park filter and extra counters removed.</span></li><li><span class="vn">2.7</span><span class="dt">23 Oct 2026</span><span class="tx">Index: card tags and footer revised.</span></li><li><span class="vn">2.6</span><span class="dt">23 Oct 2026</span><span class="tx">Unity assets: documentation links added to 109 assets.</span></li><li><span class="vn">2.5</span><span class="dt">23 Oct 2026</span><span class="tx">Unity assets: description shortened.</span></li><li><span class="vn">2.4</span><span class="dt">23 Oct 2026</span><span class="tx">Index: intro text rewritten.</span></li><li><span class="vn">2.3</span><span class="dt">23 Oct 2026</span><span class="tx">Index: “Choose a library” heading removed.</span></li><li><span class="vn">2.2</span><span class="dt">23 Oct 2026</span><span class="tx">Taiwan page renamed “Trees and plants in Taiwan”; 37 entries added, 1 removed.</span></li><li><span class="vn">2.1</span><span class="dt">23 Oct 2026</span><span class="tx">Taiwan page file renamed to Xfrog_Asia_Taiwan.html.</span></li></ol>
+</section><section class="rel">
+  <div class="mj"><span class="vn big">1.0</span><div><span class="kind">Major · 22 Oct 2026</span><p>First publication: the Trees and plants in Taiwan atlas (Xfrog Asia models), published as the home page.</p></div></div>
+  
+</section>
+</div>
+<footer>Copyright Feng-Chia University &amp; VRgarden Architecture Studio (October 2026)<br>Asset names, images and trademarks belong to their respective creators and publishers.</footer>
+</body>
+</html>
