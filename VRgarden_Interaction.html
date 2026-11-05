@@ -131,6 +131,7 @@ function render(){
 }
 $('q').addEventListener('input',render);
 $('fg').addEventListener('change',render);
+(()=>{try{const v=new URLSearchParams(location.search).get('q');if(v)$('q').value=v;}catch(e){}})();
 render();
 </script>
 </body>

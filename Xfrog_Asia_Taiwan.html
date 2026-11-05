@@ -143,6 +143,7 @@ function render(){
   document.querySelectorAll('.ph').forEach(ph=>io?io.observe(ph):loadImg(ph));
 }
 ['q','fl','fs','ft','fw','fr'].forEach(id=>$(id).addEventListener('input',render));
+(()=>{try{const v=new URLSearchParams(location.search).get('q');if(v)$('q').value=v;}catch(e){}})();
 render();
 </script>
 </body>
