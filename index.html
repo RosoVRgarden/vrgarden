@@ -296,6 +296,8 @@ function search(){
     <span class="libs">${o.pages.map(x=>`<a class="lib" href="${esc(link(x))}" title="Open in ${esc(x.p.title)}">${esc(x.p.title)}</a>`).join('')}</span></div></li>`).join('');
 }
 $('gs').addEventListener('input',search);
+// start with an empty search, also when coming back with the browser's Back button
+window.addEventListener('pageshow',()=>{if($('gs').value){$('gs').value='';search()}});
 $('gs').addEventListener('focus',()=>{load()},{once:true});
 $('gs').addEventListener('keydown',e=>{
   if(e.key==='Enter'){const a=$('gsres').querySelector('a.t');if(a){e.preventDefault();location.href=a.href}}
