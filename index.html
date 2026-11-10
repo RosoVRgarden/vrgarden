@@ -45,8 +45,17 @@ a.card:hover,a.card:focus-visible{transform:translateY(-3px);border-color:var(--
 .body p{margin:0;color:var(--muted);line-height:1.5;font-size:15px}
 .go{margin-top:auto;padding-top:12px;font-family:"Space Mono",monospace;font-size:14px;font-weight:700}
 .trees-card .go{color:var(--green)}
-.search{margin:0 0 14px;position:relative}
+.search{position:relative;margin:0 0 14px}
+.advrow{display:flex;justify-content:center;margin:28px 0 0}
 @media (min-width:912px){.search{width:calc((100% - 40px)*2/3 + 20px)}}
+.adv{display:inline-flex;align-items:center;gap:10px;height:50px;font:600 15px Archivo,system-ui,sans-serif;color:var(--ink);cursor:pointer;user-select:none}
+.adv input{position:absolute;opacity:0;width:1px;height:1px}
+.adv .sw{width:42px;height:24px;border-radius:12px;background:var(--line);position:relative;transition:background .15s;flex:none}
+.adv .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--card);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.adv input:checked+.sw{background:var(--lime)}
+.adv input:checked+.sw::after{transform:translateX(18px)}
+.adv input:focus-visible+.sw{outline:2px solid var(--ink);outline-offset:2px}
+.card[hidden]{display:none}
 .search input{width:100%;font:16px Archivo,system-ui,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px 44px;outline:none;-webkit-appearance:none;appearance:none}
 .search input:focus{border-color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--lime) 55%,transparent)}
 .search svg{position:absolute;left:15px;top:15px;pointer-events:none;color:var(--muted)}
@@ -241,7 +250,7 @@ footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}
         <span class="go">Open catalogue →</span>
       </div>
     </a>
-    <a class="card" href="VRgarden_UI.html">
+    <a class="card" href="VRgarden_UI.html" data-adv hidden>
       <div class="band ui">
         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="8" y="12" width="48" height="40" rx="4" stroke="#ffffff" stroke-width="3"/><path d="M8 22h48" stroke="#ffffff" stroke-width="3"/><rect x="16" y="30" width="14" height="14" rx="2" stroke="#ffffff" stroke-width="3"/><path d="M36 32h12M36 40h8" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/></svg>
         <span class="tag">Unity · UI</span>
@@ -252,7 +261,7 @@ footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}
         <span class="go">Open catalogue →</span>
       </div>
     </a>
-    <a class="card" href="VRgarden_Misc.html">
+    <a class="card" href="VRgarden_Misc.html" data-adv hidden>
       <div class="band misc">
         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="8" y="8" width="20" height="20" rx="3" stroke="#ffffff" stroke-width="3"/><rect x="36" y="8" width="20" height="20" rx="3" stroke="#ffffff" stroke-width="3"/><rect x="8" y="36" width="20" height="20" rx="3" stroke="#ffffff" stroke-width="3"/><circle cx="46" cy="46" r="10" stroke="#ffffff" stroke-width="3"/></svg>
         <span class="tag">Unity · Misc</span>
@@ -264,14 +273,17 @@ footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}
       </div>
     </a>
   </div>
+  <div class="advrow">
+  <label class="adv" title="Show the Unity UI and Misc assets libraries"><input type="checkbox" id="adv"><span class="sw" aria-hidden="true"></span>Advanced</label>
+  </div>
 </div>
-<footer>Copyright Feng-Chia University &amp; VRgarden Architecture Studio (October 2026)<br>Asset names, images and trademarks belong to their respective creators and publishers.<br>Version 14.7 · 7th November 2026 · <a href="VRgarden_Version_Log.html">Version log</a></footer>
+<footer>Copyright Feng-Chia University &amp; VRgarden Architecture Studio (October 2026)<br>Asset names, images and trademarks belong to their respective creators and publishers.<br>Version 14.10 · 10th November 2026 · <a href="VRgarden_Version_Log.html">Version log</a></footer>
 <script>
 (()=>{
 const $=id=>document.getElementById(id);
 const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const grid=document.querySelector('.grid');
-const PAGES=[...grid.querySelectorAll('a.card')].map(a=>({href:a.getAttribute('href'),title:a.querySelector('h2').textContent.trim()}));
+const PAGES=[...grid.querySelectorAll('a.card')].map(a=>({href:a.getAttribute('href'),title:a.querySelector('h2').textContent.trim(),adv:a.hasAttribute('data-adv')}));
 let IDX=null,loading=null,failed=0;
 // read the DATA array embedded in a library page
 function readData(h){
@@ -315,7 +327,8 @@ function search(){
   if(!IDX.length){$('gsinfo').textContent='Search needs the site to be opened online (for example on GitHub Pages); it cannot read the library pages from a local file.';return}
   const words=q.split(/\s+/);
   const score=o=>o.nl.startsWith(q)||o.nl.includes('| '+q)?0:o.nl.includes(q)?1:words.every(w=>o.nl.includes(w))?2:3;
-  const hits=IDX.filter(o=>words.every(w=>o.k.includes(w)))
+  const on=$('adv').checked;
+  const hits=IDX.map(o=>on?o:{...o,pages:o.pages.filter(x=>!x.p.adv)}).filter(o=>o.pages.length&&words.every(w=>o.k.includes(w)))
     .map(o=>[score(o),o]).sort((a,b)=>a[0]-b[0]||(b[1].e-a[1].e)||a[1].n.localeCompare(b[1].n,undefined,{sensitivity:'base',numeric:true})).map(x=>x[1]);
   const libs=new Set(hits.flatMap(o=>o.pages.map(x=>x.p.title))).size,MAX=60;
   $('gsinfo').textContent=hits.length?`${hits.length} asset${hits.length>1?'s':''} in ${libs} librar${libs>1?'ies':'y'}${hits.length>MAX?` · showing the first ${MAX}`:''}`:'No asset matches this search.';
@@ -325,6 +338,10 @@ function search(){
     <span class="libs">${o.pages.map(x=>`<a class="lib" href="${esc(link(x))}" title="Open in ${esc(x.p.title)}">${esc(x.p.title)}</a>`).join('')}</span></div></li>`).join('');
 }
 $('gs').addEventListener('input',search);
+// Advanced toggle: shows the Unity UI and Misc assets libraries (hidden by default)
+function applyAdv(){const on=$('adv').checked;grid.querySelectorAll('a.card[data-adv]').forEach(a=>{a.hidden=!on});if($('gs').value.trim())search()}
+$('adv').addEventListener('change',applyAdv);
+window.addEventListener('pageshow',applyAdv);
 // start with an empty search, also when coming back with the browser's Back button
 window.addEventListener('pageshow',()=>{if($('gs').value){$('gs').value='';search()}});
 $('gs').addEventListener('focus',()=>{load()},{once:true});
